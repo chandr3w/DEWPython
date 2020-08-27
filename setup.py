@@ -13,7 +13,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url='https://github.com/chandr3w/DEWPython',
     packages=setuptools.find_packages(),
-    download_url = 'https://github.com/chandr3w/DEWPython/archive/1.0.0.tar.gz',
+    download_url = 'https://github.com/chandr3w/DEWPython/archive/1.0.1.tar.gz',
     install_requires=[
         'numpy',
         'pandas',
