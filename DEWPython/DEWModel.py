@@ -15,7 +15,7 @@ import os
 import json
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
-from DEWEquations import DEWEquations
+from DEWPython import DEWEquations
 from matplotlib.lines import Line2D
 get_ipython().run_line_magic('matplotlib', 'inline')
 from collections import defaultdict
@@ -1298,7 +1298,7 @@ class DEW(object):
     
     def run_supcrt(self):
         '''A function that runs the pre-compiled SUPCRTBL found in the file folder'''
-        self.proc = subprocess.Popen(gPath,shell = True, stdout = subprocess.PIPE, stdin = subprocess.PIPE, stderr = subprocess.STDOUT)
+        self.proc = subprocess.Popen(supPath,shell = True, stdout = subprocess.PIPE, stdin = subprocess.PIPE, stderr = subprocess.STDOUT)
         self.pout = self.proc.stdout
         self.pin = self.proc.stdin
         threading.Thread(target=self.outLoop).start()
