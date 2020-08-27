@@ -6,3 +6,5 @@ include resources/input.csv
 include resources/dielectric.csv
 include resources/Wat_den.csv
 include resources/water_gibbs.csv
+include resources/dpronsbl.dat
+include resources/SUPCRTBL.exe
