@@ -1,0 +1,8 @@
+include LICENSE.txt
+include mineralDictionary.txt
+include aqueousLst.txt
+include gasLst.txt
+include input.csv
+include dielectric.csv
+include Wat_den.csv
+include water_gibbs.csv
