@@ -19,6 +19,5 @@ setuptools.setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent"
     ],
-    package_data={'': ['LICENSE.txt', 'mineralDictionary.txt','aqueousLst.txt','gasLst.txt','input.csv','dielectric.csv','Wat_den.csv','water_gibbs.csv']},
     include_package_data=True
 )
