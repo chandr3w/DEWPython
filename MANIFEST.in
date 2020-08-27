@@ -1,8 +1,8 @@
 include LICENSE.txt
-include mineralDictionary.txt
-include aqueousLst.txt
-include gasLst.txt
-include input.csv
-include dielectric.csv
-include Wat_den.csv
-include water_gibbs.csv
+include resources/mineralDictionary.txt
+include resources/aqueousLst.txt
+include resources/gasLst.txt
+include resources/input.csv
+include resources/dielectric.csv
+include resources/Wat_den.csv
+include resources/water_gibbs.csv
