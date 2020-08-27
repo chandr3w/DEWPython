@@ -31,6 +31,7 @@ diePath =  op.dirname(op.abspath(__file__)) + '\\resources\\dielectric.csv'
 inpPath =  op.dirname(op.abspath(__file__)) + '\\resources\\input.csv'
 denPath =  op.dirname(op.abspath(__file__)) + '\\resources\\Wat_den.csv'
 gPath =  op.dirname(op.abspath(__file__)) + '\\resources\\water_gibbs.csv'
+supPath =  op.dirname(op.abspath(__file__)) + '\\resources\\SUPCRTBL.exe'
 
 global Tr, bigQ, Chi, Pr, E_PrTr, bigR, Psi, Theta, Upsilon, Conversion, mineralDictionary
 
@@ -1297,14 +1298,14 @@ class DEW(object):
     
     def run_supcrt(self):
         '''A function that runs the pre-compiled SUPCRTBL found in the file folder'''
-        self.proc = subprocess.Popen('SUPCRTBL.exe',shell = True, stdout = subprocess.PIPE, stdin = subprocess.PIPE, stderr = subprocess.STDOUT)
+        self.proc = subprocess.Popen(gPath,shell = True, stdout = subprocess.PIPE, stdin = subprocess.PIPE, stderr = subprocess.STDOUT)
         self.pout = self.proc.stdout
         self.pin = self.proc.stdin
         threading.Thread(target=self.outLoop).start()
         while(self.proc.poll() is None):
             var = input('User Input: ')
             if '.txt' in var:
-                self.supcrtFile = var
+                self.supcrtFile = op.dirname(op.abspath(__file__)) + '\\resources\\' + var
             inp=bytearray(var +'\n', sys.stdin.encoding)
             if(self.proc.poll() is None):
                 self.pin.write(inp)
@@ -1321,7 +1322,7 @@ class DEW(object):
         max_temp = float(max_temp)
         max_press = float(max_press)
         if customFile != None:
-            filename = customFile
+            filename = op.dirname(op.abspath(__file__)) + '\\resources\\' + customFile
         elif len(self.supcrtFile) ==0:
             raise ValueError("You haven't run SUPCRT yet")
         else:
