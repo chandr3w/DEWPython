@@ -18,7 +18,6 @@ setuptools.setup(
         'numpy',
         'pandas',
         'matplotlib',
-        'mpl_toolkits',
       ],
     #package_dir={'': 'DEWPython'},
     classifiers=[
