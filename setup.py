@@ -17,14 +17,8 @@ setuptools.setup(
     install_requires=[
         'numpy',
         'pandas',
-        'sys',
-        'threading',
-        'subprocess',
-        'os',
-        'json',
         'matplotlib',
         'mpl_toolkits',
-        'collections',
       ],
     #package_dir={'': 'DEWPython'},
     classifiers=[
