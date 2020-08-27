@@ -25,7 +25,7 @@ import os.path as op
 # In[3]:
 mineralPath = op.dirname(op.abspath(__file__)) + '\\resources\\mineralDictionary.txt'
 gasPath = op.dirname(op.abspath(__file__)) + '\\resources\\gasLst.txt'
-aqPath = op.dirname(op.abspath(__file__)) + '\\resources\\aqLst.txt'
+aqPath = op.dirname(op.abspath(__file__)) + '\\resources\\aqueousLst.txt'
 
 
 global Tr, bigQ, Chi, Pr, E_PrTr, bigR, Psi, Theta, Upsilon, Conversion, mineralDictionary
