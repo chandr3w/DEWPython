@@ -18,17 +18,19 @@ from mpl_toolkits import mplot3d
 from matplotlib.lines import Line2D
 get_ipython().run_line_magic('matplotlib', 'inline')
 from collections import defaultdict
-import seafreeze as sf
-
+import os.path as op
 
 # ### Defining a Global Variables (Location and Constants)
 
 # In[3]:
+mineralPath = op.dirname(op.abspath(__file__)) + '/resources/mineralDictionary.txt'
+gasPath = op.dirname(op.abspath(__file__)) + '/resources/gasLst.txt'
+aqPath = op.dirname(op.abspath(__file__)) + '/resources/aqLst.txt'
 
 
 global Tr, bigQ, Chi, Pr, E_PrTr, bigR, Psi, Theta, Upsilon, Conversion, mineralDictionary
 
-mineralDictionary = json.load(open("mineralDictionary.txt"))
+mineralDictionary = json.load(open(mineralPath))
 '''A dictionary that stores all the minerals and allows them to be queried for use in the DEW model.'''
 
 bigQ = 5.903E-07
@@ -59,7 +61,7 @@ Conversion = 41.8393
 
 
 [nameLst, symbolDict, delGf, delHf, entropy, volume, specHeat, a1x10, 
- a2x10_2, a3, a4x10_4, c1, c2x10_4, omegax10_5, Z, comments] = json.load(open("aqueousLst.txt"))
+ a2x10_2, a3, a4x10_4, c1, c2x10_4, omegax10_5, Z, comments] = json.load(open(aqPath))
 
 
 # #### Code for adding additional aqueous species
@@ -99,7 +101,7 @@ Conversion = 41.8393
 # In[7]:
 
 
-[GasLst,GasSymb,GasDelGf,GasDelHf,GasEntropy,GasCp,GasA,GasBx103,GasCx10_5, GasT] = json.load(open("gasLst.txt"))
+[GasLst,GasSymb,GasDelGf,GasDelHf,GasEntropy,GasCp,GasA,GasBx103,GasCx10_5, GasT] = json.load(open(gasPath))
 
 
 # # An Object Class that Can Calculate and Return Parameters for Different Options of the Deep Earth Water Model
