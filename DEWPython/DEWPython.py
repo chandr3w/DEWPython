@@ -23,9 +23,9 @@ import os.path as op
 # ### Defining a Global Variables (Location and Constants)
 
 # In[3]:
-mineralPath = op.dirname(op.abspath(__file__)) + '/resources/mineralDictionary.txt'
-gasPath = op.dirname(op.abspath(__file__)) + '/resources/gasLst.txt'
-aqPath = op.dirname(op.abspath(__file__)) + '/resources/aqLst.txt'
+mineralPath = op.dirname(op.abspath(__file__)) + '\\resources\\mineralDictionary.txt'
+gasPath = op.dirname(op.abspath(__file__)) + '\\resources\\gasLst.txt'
+aqPath = op.dirname(op.abspath(__file__)) + '\\resources\\aqLst.txt'
 
 
 global Tr, bigQ, Chi, Pr, E_PrTr, bigR, Psi, Theta, Upsilon, Conversion, mineralDictionary
