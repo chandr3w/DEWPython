@@ -26,7 +26,10 @@ import os.path as op
 mineralPath = op.dirname(op.abspath(__file__)) + '\\resources\\mineralDictionary.txt'
 gasPath = op.dirname(op.abspath(__file__)) + '\\resources\\gasLst.txt'
 aqPath = op.dirname(op.abspath(__file__)) + '\\resources\\aqueousLst.txt'
-
+diePath =  op.dirname(op.abspath(__file__)) + '\\resources\\dielectric.csv'
+inpPath =  op.dirname(op.abspath(__file__)) + '\\resources\\input.csv'
+denPath =  op.dirname(op.abspath(__file__)) + '\\resources\\Wat_den.csv'
+gPath =  op.dirname(op.abspath(__file__)) + '\\resources\\water_gibbs.csv'
 
 global Tr, bigQ, Chi, Pr, E_PrTr, bigR, Psi, Theta, Upsilon, Conversion, mineralDictionary
 
@@ -601,7 +604,7 @@ class DEW(object):
         This only currently works for an unmodified Deep Earth Water Model Sheet format (6_23_20). 
         This is not dependent on anything else being called first.'''
         
-        diaL = pd.read_csv('dielectric.csv', header = None)
+        diaL = pd.read_csv(diePath, header = None)
         dia = diaL.to_numpy()
         dia = dia[4:, 1:]
         diaTrim = dia[1:, 1:]
@@ -611,7 +614,7 @@ class DEW(object):
                 # in form pressure, temperature, value
                 diaCollection.append([dia[0][pressure + 1], dia[row + 1][0], diaTrim[row][pressure]])
 
-        watDen = pd.read_csv('Wat_den.csv', header = None)
+        watDen = pd.read_csv(denPath, header = None)
         w = watDen.to_numpy()
         w = w[4:, 1:]
         wTrim = w[1:,1:]
@@ -621,7 +624,7 @@ class DEW(object):
                 # in form pressure, temperature, value
                 watDenCollection.append([w[0][pressure + 1], w[row + 1][0], wTrim[row][pressure]])
 
-        gibbsOfWater = pd.read_csv('water_gibbs.csv', header = None)
+        gibbsOfWater = pd.read_csv(gPath, header = None)
         gibbs = gibbsOfWater.to_numpy()
         gibbs = gibbs[4:,1:]
         gibbsTrim = gibbs[1:, 1:]
@@ -651,7 +654,7 @@ class DEW(object):
 
         
         if self.ptInput == "Custom":
-            ptSheet = pd.read_csv('input.csv',encoding= 'unicode_escape', header = None)
+            ptSheet = pd.read_csv(inpPath,encoding= 'unicode_escape', header = None)
             ptFinder = ptSheet.to_numpy()
             tempArr = [float(i[1]) for i in ptFinder[4:]]
             pressArr = [float(i[0]) for i in ptFinder[4:]]
