@@ -19,19 +19,27 @@ from DEWPython import DEWEquations
 from matplotlib.lines import Line2D
 get_ipython().run_line_magic('matplotlib', 'inline')
 from collections import defaultdict
+import pkg_resources
 import os.path as op
 
 # ### Defining a Global Variables (Location and Constants)
-
-# In[3]:
-mineralPath = op.dirname(op.abspath(__file__)) + '\\resources\\mineralDictionary.txt'
-gasPath = op.dirname(op.abspath(__file__)) + '\\resources\\gasLst.txt'
-aqPath = op.dirname(op.abspath(__file__)) + '\\resources\\aqueousLst.txt'
-diePath =  op.dirname(op.abspath(__file__)) + '\\resources\\dielectric.csv'
-inpPath =  op.dirname(op.abspath(__file__)) + '\\resources\\input.csv'
-denPath =  op.dirname(op.abspath(__file__)) + '\\resources\\Wat_den.csv'
-gPath =  op.dirname(op.abspath(__file__)) + '\\resources\\water_gibbs.csv'
-supPath =  op.dirname(op.abspath(__file__)) + '\\resources\\SUPCRTBL.exe'
+resource_package = 'DEWPython'
+min_path = '/'.join(('resources', 'mineralDictionary.txt'))
+mineralPath = pkg_resources.resource_filename(resource_package, min_path)
+gas_path = '/'.join(('resources', 'gasLst.txt'))
+gasPath = pkg_resources.resource_filename(resource_package, gas_path)
+aq_path = '/'.join(('resources', 'aqueousLst.txt'))
+aqPath = pkg_resources.resource_filename(resource_package, aq_path)
+die_path =  '/'.join(('resources', 'dielectric.csv'))
+diePath = pkg_resources.resource_filename(resource_package, die_path)
+inp_path ='/'.join(('resources', 'input.csv'))
+inpPath = pkg_resources.resource_filename(resource_package, inp_path)
+den_path ='/'.join(('resources', 'input.csv'))
+denPath = pkg_resources.resource_filename(resource_package, den_path)
+g_path = '/'.join(('resources', 'water_gibbs.csv'))
+gPath = pkg_resources.resource_filename(resource_package, g_path)
+sup_path = '/'.join(('resources', 'SUPCRTBL.exe'))
+supPath =  pkg_resources.resource_filename(resource_package, sup_path)
 
 global Tr, bigQ, Chi, Pr, E_PrTr, bigR, Psi, Theta, Upsilon, Conversion, mineralDictionary
 

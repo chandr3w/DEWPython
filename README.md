@@ -3,7 +3,7 @@
 [![License: MIT License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Twitter Follow](https://img.shields.io/twitter/follow/chandr3w.svg?style=flat-square&logo=twitter&label=Follow)](https://twitter.com/chandr3w)
 
-V0.1.0
+V1.0.4
 
 The DEW package allows the user to compute the thermodynamic and elastic properties of various aqueous inputs for a general range of 100-1200C and a pressure range of 1.0-60 Kb. It is based on the [DEW spreadsheet](http://www.dewcommunity.org/) and behaves similarly.The DEW package additionally provides integrated support for [SUPCRTBL](https://models.earth.indiana.edu/supcrtbl.php) and can be used to directly import and compare species between the two models.
 
@@ -12,19 +12,23 @@ The DEW package allows the user to compute the thermodynamic and elastic propert
 This section provide a basic example on the running of DEW. Because the input fields are interactive, it relies on user input in order to function (which cannot be demonstrated here). [Full documentation](https://chandr3w.github.io/DEW_amchan/) for the class is available externally.
 
 ### Download
-Clone the repository and set the working directory as DEW_Folder
+Download and install using using 
+```
+pip install DEWPython
+```
 
 ### Running DEW
-Execute the following line in the same working directory that the DEW files are in:
+Import DEWPython and DEWPython.DEWModel
 ```
-%run DEW.py
+import DEWPython
+from DEWPython import DEWModel as dm
 ```
 You are now ready to use the DEW module! This command will execute the imports of packages and the initialization of the model. If you wish to change base parameters please see the documentation. The only non-standard package that DEW is dependent on is the "pandas" package, however a full list of dependencies is included below.
 
 ### Using the Model
 DEW is an object-oriented class dependent on the DEWEquations class. To run it, first initialize a DEW object:
 ```
-reaction = DEW()
+reaction = dm.DEW()
 ```
 From here, set the inputs, outputs, and preferences interactively. *Throughout every stage in the model, parameters can be queried for debugging. See the documentation for more details.* 
 ```
@@ -106,13 +110,11 @@ Certain equations within DEW are valid to certain values (as are the properties 
 * **Steven Vance** - *Group 3226 (Planetary Interiors and Geophysics). NASA Jet Propulsion Laboratory, California Institute of Technology, Pasadena, CA 91109*
 
 ## Change log
-- #TODO
 
-### Changes since 0.1.0
-- #TODO
+### Changes since 1.0.3
+- Updated package to allow usage by MacOS
 
 ### Planned updates
-- #TODO
 
 ## License
 
