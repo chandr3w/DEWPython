@@ -6,5 +6,5 @@ include DEWPython/resources/input.csv
 include DEWPython/resources/dielectric.csv
 include DEWPython/resources/Wat_den.csv
 include DEWPython/resources/water_gibbs.csv
-include DEWPython/resources/dpronsbl.dat
+include DEWPython/dpronsbl.dat
 include DEWPython/resources/SUPCRTBL.exe
