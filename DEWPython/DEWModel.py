@@ -1306,7 +1306,7 @@ class DEW(object):
         df.columns = ['Temperature','Pressure','delV','delG','LogK']
         name = input('Input the name of the CSV file')
         finalName = name + ".csv"
-        df.to_csv(finalName)
+        df.to_csv(finalName, index = False)
     
     def outLoop(self):
         '''A helper function to allow SUPCRTBL to run'''
