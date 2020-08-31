@@ -1307,7 +1307,18 @@ class DEW(object):
         name = input('Input the name of the CSV file')
         finalName = name + ".csv"
         df.to_csv(finalName, index = False)
-    
+        
+    def options(self):
+        print('Welcome to DEWPython, here are the options you can run:')
+        print('1. DEW(): this initializes a Deep Earth Water Model Object')
+        print('  -The DEW object requires the set_inputs, set_outputs, set_TPRho, and calculate methods to be run.')
+        print('  -You can also utilize the import_custom_sheets method to import custom CSV data')
+        print('  -After calculating you can use the make_plots or export_to_csv methods.')
+        print('2. run_supcrt: this initializes an inline run of SUPCRTBL')
+        print('  -After initializing the SUPCRTBL object, run calculate_supcrt to store the supcrt outputs in arrays')
+        print('  -You can also use run_supcrt on a supcrt ouput file that has already been run by adding the optional argument of the file name')
+        print('  -After this you can run make_supcrt_plots to plot the supcrt files akin the a DEW file')
+        
     def outLoop(self):
         '''A helper function to allow SUPCRTBL to run'''
         running = True
