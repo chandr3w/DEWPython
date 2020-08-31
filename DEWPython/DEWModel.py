@@ -1294,6 +1294,19 @@ class DEW(object):
             plt.ylabel('DelV')
             plt.title('Temp vs. DelV Psat Curve')
         return
+       
+    def export_to_csv(self):
+        dV = [row[0] for row in self.delV]
+        dG = [row[0] for row in self.delG]
+        lK = [row[0] for row in self.logK]
+        T = [row[1] for row in self.logK]
+        P = [row[1] for row in self.logK]
+        output_array = np.column_stack([T,P, dV,dG,lK])
+        df = pd.DataFrame(output_array)
+        df.columns = ['Temperature','Pressure','delV','delG','LogK']
+        name = input('Input the name of the CSV file')
+        finalName = name + ".csv"
+        df.to_csv(finalName)
     
     def outLoop(self):
         '''A helper function to allow SUPCRTBL to run'''
