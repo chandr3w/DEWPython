@@ -120,6 +120,15 @@ Conversion = 41.8393
 # # An Object Class that Can Calculate and Return Parameters for Different Options of the Deep Earth Water Model
 
 # In[8]:
+def aqueous_options():
+    for item in nameLst:
+        print(item)
+def gas_options():
+    for item in GasLst:
+        print(item)
+def mineral_options():
+    for key in mineralDictionary:
+        print(key)
 
 
 class DEW(object):
