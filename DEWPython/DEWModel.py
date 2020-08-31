@@ -919,7 +919,7 @@ class DEW(object):
                     except:
                         waterLst.append(GibbsH2O[i])
                 else:
-                    store = DEWEquations.calculateGibbsOfWater(self.pressureUsed[i], self.tempUsed[i], self.myWatNumber, self.equation, self.psat)
+                    store = DEWEquations.DEWEquations.calculateGibbsOfWater(self.pressureUsed[i], self.tempUsed[i], self.myWatNumber, self.equation, self.psat)
                     waterLst.append(store)
                 if self.DisplayVol == True:
                     try:
