@@ -751,7 +751,7 @@ class DEW(object):
                 else:
                     self.RhoWatArr.append(0)
             else:
-                self.RhoWatArr.append(DEWEquations.calculateDensity(self.pressureUsed[i], self.tempUsed[i], self.equation, 0.01, self.psat))
+                self.RhoWatArr.append(DEWEquations.DEWEquations.calculateDensity(self.pressureUsed[i], self.tempUsed[i], self.equation, 0.01, self.psat))
                
         # Sets the dielectric constant array
         for i in range(len(self.pressureUsed)):
@@ -765,9 +765,9 @@ class DEW(object):
                     self.DiaArr.append(0)
             else:
                 if self.ForceSupcrt == True and self.pressureUsed[i] < 5000 and self.psat == False:
-                    self.DiaArr.append(DEWEquations.calculateEpsilon(self.RhoWatArr[i], self.tempUsed[i], 1, self.psat))
+                    self.DiaArr.append(DEWEquations.DEWEquations.calculateEpsilon(self.RhoWatArr[i], self.tempUsed[i], 1, self.psat))
                 else:
-                    self.DiaArr.append(DEWEquations.calculateEpsilon(self.RhoWatArr[i], self.tempUsed[i], self.diaEq, self.psat))
+                    self.DiaArr.append(DEWEquations.DEWEquations.calculateEpsilon(self.RhoWatArr[i], self.tempUsed[i], self.diaEq, self.psat))
         
         
         ### The function works up until this point, I haven't debugged further yet (6_29_20) ###
@@ -777,7 +777,7 @@ class DEW(object):
             if self.DisplayVol == True:
                 try:
                     # Has issues with some Q, not sure if problematic
-                    self.QArr.append(float(DEWEquations.calculateQ(self.pressureUsed[i], self.tempUsed[i], self.RhoWatArr[i], self.equation, self.diaEq, self.psat))*np.double(10)**6)
+                    self.QArr.append(float(DEWEquations.DEWEquations.calculateQ(self.pressureUsed[i], self.tempUsed[i], self.RhoWatArr[i], self.equation, self.diaEq, self.psat))*np.double(10)**6)
                 except:
                     self.QArr.append(0)
             else:
@@ -941,7 +941,7 @@ class DEW(object):
                     except:
                         waterLst.append(GibbsH2O[i])
                 else:
-                    waterLst.append(DEWEquations.calculateGibbsOfWater(self.pressureUsed[i], self.tempUsed[i], self.myWatNumber, self.equation, self.psat))
+                    waterLst.append(DEWEquations.DEWEquations.calculateGibbsOfWater(self.pressureUsed[i], self.tempUsed[i], self.myWatNumber, self.equation, self.psat))
                 if self.DisplayVol == True:
                     try:
                         waterLst2.append(18.01528/self.RhoWatArr[i])
@@ -986,15 +986,15 @@ class DEW(object):
                                 + aq[8]*(10**2)*np.log((Psy+self.pressureUsed[i])/(Psy+Pr))
                                 + (1/(self.tKelvin[i]-Theta))*(aq[9]*(self.pressureUsed[i]-Pr)
                                                                + aq[10]*(10**4)*np.log((Psy+self.pressureUsed[i])/(Psy+Pr)))
-                                + DEWEquations.calculateOmega(self.pressureUsed[i],self.tempUsed[i],self.RhoWatArr[i],aq[0],aq[13]*(10**5),aq[14])*((1/self.DiaArr[i])-1)
+                                + DEWEquations.DEWEquations.calculateOmega(self.pressureUsed[i],self.tempUsed[i],self.RhoWatArr[i],aq[0],aq[13]*(10**5),aq[14])*((1/self.DiaArr[i])-1)
                                 - aq[13]*(10**5)*((1/E_PrTr)-1)
                                 + aq[13]*(10**5)*Upsilon*(self.tKelvin[i]-T_r))
                 
             for i in range(len(self.pressureUsed)):
                 storelst2.append((aq[7]/10 + aq[8]*100/(Psy+self.pressureUsed[i])
                                   + (aq[9] + aq[10]*10000/(Psy+self.pressureUsed[i]))/(self.tKelvin[i]-Theta)
-                                  - DEWEquations.calculateOmega(self.pressureUsed[i],self.tempUsed[i],self.RhoWatArr[i],aq[0],aq[13]*(10**5),aq[14])*(self.QArr[i]*10**-6 )
-                                  + (1/self.DiaArr[i] - 1) * DEWEquations.calculate_domegadP(self.pressureUsed[i],self.tempUsed[i],self.RhoWatArr[i],aq[0],aq[13]*(10**5),aq[14],self.equation,self.psat))*41.84)
+                                  - DEWEquations.DEWEquations.calculateOmega(self.pressureUsed[i],self.tempUsed[i],self.RhoWatArr[i],aq[0],aq[13]*(10**5),aq[14])*(self.QArr[i]*10**-6 )
+                                  + (1/self.DiaArr[i] - 1) * DEWEquations.DEWEquations.calculate_domegadP(self.pressureUsed[i],self.tempUsed[i],self.RhoWatArr[i],aq[0],aq[13]*(10**5),aq[14],self.equation,self.psat))*41.84)
                 
             aqInGibbs.append(storelst)
             aqInV.append(storelst2)
@@ -1014,15 +1014,15 @@ class DEW(object):
                                 + aq[8]*(10**2)*np.log((Psy+self.pressureUsed[i])/(Psy+Pr))
                                 + (1/(self.tKelvin[i]-Theta))*(aq[9]*(self.pressureUsed[i]-Pr)
                                                                + aq[10]*(10**4)*np.log((Psy+self.pressureUsed[i])/(Psy+Pr)))
-                                + DEWEquations.calculateOmega(self.pressureUsed[i],self.tempUsed[i],self.RhoWatArr[i],aq[0],aq[13]*(10**5),aq[14])*((1/self.DiaArr[i])-1)
+                                + DEWEquations.DEWEquations.calculateOmega(self.pressureUsed[i],self.tempUsed[i],self.RhoWatArr[i],aq[0],aq[13]*(10**5),aq[14])*((1/self.DiaArr[i])-1)
                                 - aq[13]*(10**5)*((1/E_PrTr)-1)
                                 + aq[13]*(10**5)*Upsilon*(self.tKelvin[i]-T_r))
                 
             for i in range(len(self.pressureUsed)):
                 storelst2.append((aq[7]/10 + aq[8]*100/(Psy+self.pressureUsed[i])
                                   + (aq[9] + aq[10]*10000/(Psy+self.pressureUsed[i]))/(self.tKelvin[i]-Theta)
-                                  - DEWEquations.calculateOmega(self.pressureUsed[i],self.tempUsed[i],self.RhoWatArr[i],aq[0],aq[13]*(10**5),aq[14])*(self.QArr[i]*10**-6 )
-                                  + (1/self.DiaArr[i] - 1) * DEWEquations.calculate_domegadP(self.pressureUsed[i],self.tempUsed[i],self.RhoWatArr[i],aq[0],aq[13]*(10**5),aq[14],self.equation,self.psat))*41.84)
+                                  - DEWEquations.DEWEquations.calculateOmega(self.pressureUsed[i],self.tempUsed[i],self.RhoWatArr[i],aq[0],aq[13]*(10**5),aq[14])*(self.QArr[i]*10**-6 )
+                                  + (1/self.DiaArr[i] - 1) * DEWEquations.DEWEquations.calculate_domegadP(self.pressureUsed[i],self.tempUsed[i],self.RhoWatArr[i],aq[0],aq[13]*(10**5),aq[14],self.equation,self.psat))*41.84)
             aqOuGibbs.append(storelst)
             aqOuV.append(storelst2)
         if len(aqInGibbs) == 0:
