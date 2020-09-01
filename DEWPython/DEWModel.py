@@ -1352,6 +1352,129 @@ class DEW(object):
                 self.pin.write(inp)
                 self.pin.flush()
         return
+       
+    def calculate_supcrt_special(self, customFile = None):
+        '''Calculates the output from either SUPCRTBL/SUPCRT96 at isothermal/isobaric temperatures'''
+        returnLst = {}
+       
+        if customFile != None:
+            filename = op.dirname(op.abspath(__file__)) + '\\resources\\' + customFile
+        elif len(self.supcrtFile) ==0:
+            raise ValueError("You haven't run SUPCRT yet")
+        else:
+            filename = self.supcrtFile
+          
+        with open(filename, 'r') as f:
+            impor = f.read()
+            import_data = impor.replace('\t', ' ')
+
+        split = import_data.split('\n')
+        for i in range(len(split)):
+            try:
+                if 'ISOTHERMS(degC)' in split[i]:
+                    finalTemp = " ".join(split[i].split()).split(' ')[5]
+                    finalPress = " ".join(split[i+1].split()).split(' ')[6]
+                    returnVar = input('Enter reaction title')
+            except:
+                continue
+
+            if 'STANDARD STATE PROPERTIES OF THE REACTION AT ELEVATED TEMPERATURES AND PRESSURES' in split[i]:
+                subLst = []
+                temp = []
+                pres = []
+                DH2 = []
+                lgK = []
+                dlG = []
+                dlH = []
+                dlS = []
+                dlV = []
+                dlCp = []
+                subDict = {}
+                for item in split[(i+4):]:
+                    if len(item) > 0:
+                        subLst = (" ".join(item.split())).split(' ')
+                        try:
+                            float(subLst[0])
+                        except:
+                            continue
+                        try:
+                            a = subLst[0]
+                            b = subLst[1]
+                            c = subLst[2]
+                            d = subLst[3]
+                            e = subLst[4]
+                            f = subLst[5]
+                            g = subLst[6]
+                            h = subLst[7]
+                            i = subLst[8]
+                            temp.append(a)
+                            pres.append(b)
+                            DH2.append(c)
+                            lgK.append(d)
+                            dlG.append(e)
+                            dlH.append(f)
+                            dlS.append(g) 
+                            dlV.append(h)
+                            dlCp.append(i)
+                            if float(subLst[0]) == finalTemp and float(subLst[1]) == finalPress:
+                                break
+                        except:
+                            continue
+
+                subDict['Temperature'] = [float(i) for i in temp]
+                subDict['Pressure'] = [float(i) for i in pres]
+                DH2Lst = []
+                lgKLst = []
+                dlGLst = []
+                dlHLst = []
+                dlSLst = []
+                dlVLst = []
+                dlCpLst = []
+                for i in range(len(DH2)):
+                    try: 
+                        DH2Lst.append(float(DH2[i]))
+                    except:
+                        DH2Lst.append(0)
+
+                    try:
+                        lgKLst.append(float(lgK[i]))
+                    except: 
+                        lgKLst.append(0)
+
+                    try:
+                        dlGLst.append(float(dlG[i]))
+                    except:
+                        dlGLst.append(0)
+
+                    try:
+                        dlHLst.append(float(dlH[i]))
+                    except:
+                        dlHLst.append(0)
+
+                    try:
+                        dlSLst.append(float(dlS[i]))
+                    except:
+                        dlSLst.append(0)
+
+                    try:
+                        dlVLst.append(float(dlV[i]))
+                    except:
+                        dlVLst.append(0)
+
+                    try:
+                        dlCpLst.append(dlCp[i])
+                    except:
+                        dlCpLst.append[0]
+
+                subDict['DH2O'] = DH2Lst
+                subDict['LogK'] = lgKLst
+                subDict['delG'] = dlGLst
+                subDict['delH'] = dlHLst
+                subDict['delS'] = dlSLst
+                subDict['delV'] = dlVLst
+                subDict['delCp'] = dlCpLst
+                returnLst[returnVar] = subDict
+            self.supcrtOut = returnLst
     
     def calculate_supcrt(self, customFile = None):
         '''Calculates an output of thermodynamic properties from a SUPCRTBL output file in the same directory. User must input 
