@@ -1309,7 +1309,7 @@ class DEW(object):
         dG = [row[0] for row in self.delG]
         lK = [row[0] for row in self.logK]
         T = [row[1] for row in self.logK]
-        P = [row[1] for row in self.logK]
+        P = [row[2] for row in self.logK]
         output_array = np.column_stack([T,P, dV,dG,lK])
         df = pd.DataFrame(output_array)
         df.columns = ['Temperature','Pressure','delV','delG','LogK']
