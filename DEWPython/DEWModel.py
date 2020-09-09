@@ -687,7 +687,7 @@ class DEW(object):
                     tempstep = int(input('Input the temperature step'))
                     pmin = int(input('Input the minimum pressure'))
                     pmax = int(input('Input the maximum pressure'))
-                    pstep = int(input('Input the pressure step'))
+                    pstep = input('Input the pressure step')
                     validBool = True
                 except ValueError:
                     print('You have entered a non-integer value, please start again')
