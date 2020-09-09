@@ -750,7 +750,7 @@ class DEWEquations:
                     dfdP = - ( pow(( T - 155 )  / 300, 4.8) + 36.66666 * pow(( T - 155 )  / 300, 16) )  *  ( 3 * - 1.504956E-10 * pow(1000 - P, 2) + 4 * 5.017997E-14 * pow(1000 - P, 3) )
                 else:
                     dfdP = 0
-                fn_return_value = - b_g * calculate_drhodP(density, T, equation) * g /  ( 1 - density )  - dfdP
+                fn_return_value = - b_g * DEWEquations.calculate_drhodP(density, T, equation) * g /  ( 1 - density )  - dfdP
         return fn_return_value
     
     def calculateQ(pressure, temperature, density, densityEquation, epsilonEquation, Psat):
