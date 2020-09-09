@@ -645,7 +645,7 @@ class DEWEquations:
             #This represents the pressure and temperature dependent solvent function
             g = DEWEquations.calculateG(P, T, density)
             #Defines the electrostatic radius at the input P and T
-            re = reref + (Z) * g
+            re = reref + np.abs(Z) * g
             fn_return_value = eta *  ( Z * Z / re - Z /  ( 3.082 + g ) )
         return fn_return_value
     
