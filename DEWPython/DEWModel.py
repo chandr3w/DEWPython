@@ -895,7 +895,7 @@ class DEW(object):
         waterMatOutV = []
         if self.WaterFreeEq == 'D&H 1978':
             self.myWatNumber = 1
-        elif self.WaterFreeEq == 'Integral of Volume':
+        elif self.WaterFreeEq == 'Integral':
             self.myWatNumber = 2
         else:
             self.myWatNumber = 3
