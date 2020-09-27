@@ -163,7 +163,7 @@ class DEW(object):
         '''A variable that stores the number of dielectric constant equation.'''
         self.psat = False
         '''A variable that stores the Psat option defined by input'''
-        self.myWatNumber = 1
+        self.waterDensity = 1
         '''A variable that stores the number of the density of water equation.'''
 
         
@@ -174,7 +174,7 @@ class DEW(object):
         '''The array of mineral inputs and multipliers defined by a user'''
         self.gasInputs = []
         '''The array of gas inputs and multipliers defined by a user'''
-        self.waterInp = []
+        self.waterInputs = []
         '''An array that defines if water is used in the input and hOw mUcH wAtEr?'''
         
         # Input Matrices
@@ -190,7 +190,7 @@ class DEW(object):
         '''The array of mineral outputs and multipliers defined by a user'''
         self.gasOutputs = []
         '''The array of gas outputs and multipliers defined by a user'''
-        self.waterOut = []
+        self.waterOutputs = []
         '''An array that defines if water is used in the outputand hOw mUcH wAtEr?'''
         
         # Output Matrices
@@ -243,23 +243,23 @@ class DEW(object):
         '''Used for debugging, stores the volume changes of aqueous outputs'''
         
         #Mineral Matrices
-        self.mineralsGInp = []
+        self.mineralInpGibbs = []
         '''Used for debugging, stores the free energy changes of mineral inputs'''
-        self.mineralsGOutput = []
+        self.mineralOutGibbs = []
         '''Used for debugging, stores the free energy changes of mineral outputs'''
-        self.mineralsVInp = [] 
+        self.mineralInpV = [] 
         '''Used for debugging, stores the volume changes of mineral inputs'''
-        self.mineralsVOutput = []
+        self.mineralOutV = []
         '''Used for debugging, stores the volume changes of mineral outputs'''
         
         #Water
-        self.InWaterG = []
+        self.waterInpGibbs = []
         '''Used for debugging, stores the free energy changes of water outputs'''
-        self.InWaterV = []
+        self.waterInpV = []
         '''Used for debugging, stores the volume changes of water inputs'''
-        self.OutWaterG = []
+        self.waterOutGibbs = []
         '''Used for debugging, stores the free energy changes of water outputs'''
-        self.OutWaterV = []
+        self.waterOutV = []
         '''Used for debugging, stores the volume changes of water outputs'''
         
         # Finals Arrays
@@ -405,7 +405,7 @@ class DEW(object):
                         print('Please enter a valid integer multiplier ')
             else: 
                 m3 = 0
-            self.waterInp.append([inpWater, m3])
+            self.waterInputs.append([inpWater, m3])
         return
     
     def set_outputs(self):
@@ -420,7 +420,7 @@ class DEW(object):
         self.mineralOutputs = []
         self.aqueousOutputs = []
         self.gasOutputs = []
-        self.waterOut = []
+        self.waterOutputs = []
 
 
         while mineralCount < 5:
@@ -516,7 +516,7 @@ class DEW(object):
                         print('Please enter a valid integer multiplier ')
             else: 
                 m3 = 0
-            self.waterOut.append([outWater, m3])
+            self.waterOutputs.append([outWater, m3])
         return
         
     
@@ -894,19 +894,19 @@ class DEW(object):
         waterMatInV = []
         waterMatOutV = []
         if self.WaterFreeEq == 'D&H 1978':
-            self.myWatNumber = 1
+            self.waterDensity = 1
         elif self.WaterFreeEq == 'Integral':
-            self.myWatNumber = 2
+            self.waterDensity = 2
         else:
-            self.myWatNumber = 3
+            self.waterDensity = 3
         
-        if self.waterInp[0][0] == 'yes':
+        if self.waterInputs[0][0] == 'yes':
             waterLst = []
             waterLst2 = []
             waterLst.append('H2O')
-            waterLst.append(self.waterInp[0][1])
+            waterLst.append(self.waterInputs[0][1])
             waterLst2.append('H2O')
-            waterLst2.append(self.waterInp[0][1])
+            waterLst2.append(self.waterInputs[0][1])
                                   
             for i in range(len(self.pressureUsed)):
             #for i in range(len(self.pressureUsed)):
@@ -919,7 +919,7 @@ class DEW(object):
                     except:
                         waterLst.append(GibbsH2O[i])
                 else:
-                    store = DEWEquations.DEWEquations.calculateGibbsOfWater(self.pressureUsed[i], self.tempUsed[i], self.myWatNumber, self.equation, self.psat)
+                    store = DEWEquations.DEWEquations.calculateGibbsOfWater(self.pressureUsed[i], self.tempUsed[i], self.waterDensity, self.equation, self.psat)
                     waterLst.append(store)
                 if self.DisplayVol == True:
                     try:
@@ -933,13 +933,13 @@ class DEW(object):
             waterMatInGibbs.append(waterLst)
             waterMatInV.append(waterLst2)
             
-        if self.waterOut[0][0] =='yes':
+        if self.waterOutputs[0][0] =='yes':
             waterLst = []
             waterLst2 = []
             waterLst.append('H2O')
-            waterLst.append(self.waterOut[0][1])
+            waterLst.append(self.waterOutputs[0][1])
             waterLst2.append('H2O')
-            waterLst2.append(self.waterOut[0][1])
+            waterLst2.append(self.waterOutputs[0][1])
             for i in range(len(self.pressureUsed)):
                 if self.WaterFreeEq == 'Custom':
                     try:
@@ -950,7 +950,7 @@ class DEW(object):
                     except:
                         waterLst.append(GibbsH2O[i])
                 else:
-                    waterLst.append(DEWEquations.DEWEquations.calculateGibbsOfWater(self.pressureUsed[i], self.tempUsed[i], self.myWatNumber, self.equation, self.psat))
+                    waterLst.append(DEWEquations.DEWEquations.calculateGibbsOfWater(self.pressureUsed[i], self.tempUsed[i], self.waterDensity, self.equation, self.psat))
                 if self.DisplayVol == True:
                     try:
                         waterLst2.append(18.01528/self.RhoWatArr[i])
@@ -1049,15 +1049,15 @@ class DEW(object):
         '''The function called that will update all of the parameters. It has no outputs, but allows certain arrays to be queried.
         '''
         self.calculate_matrices()
-        self.InWaterG, self.InWaterV, self.OutWaterG, self.OutWaterV = self.calculate_H2O()
+        self.waterInpGibbs, self.waterInpV, self.waterOutGibbs, self.waterOutV = self.calculate_H2O()
         self.aqInpGibbs, self.aqOutGibbs, self.aqInpV, self.aqOutV = self.calculate_aq()
         self.gasInpGibbs, self.gasOutGibbs, self.gasInpV, self.gasOutV = self.calculate_gas()
         
 
-        G1 = np.delete(np.asarray(self.InWaterG), [0,1]).astype(np.float) * int(self.waterInp[0][1])
-        V1 = np.delete(np.asarray(self.InWaterV), [0,1]).astype(np.float) * int(self.waterInp[0][1])
-        G4 = np.delete(np.asarray(self.OutWaterG), [0,1]).astype(np.float) * int(self.waterOut[0][1])
-        V4 = np.delete(np.asarray(self.OutWaterV), [0,1]).astype(np.float) * int(self.waterOut[0][1])
+        G1 = np.delete(np.asarray(self.waterInpGibbs), [0,1]).astype(np.float) * int(self.waterInputs[0][1])
+        V1 = np.delete(np.asarray(self.waterInpV), [0,1]).astype(np.float) * int(self.waterInputs[0][1])
+        G4 = np.delete(np.asarray(self.waterOutGibbs), [0,1]).astype(np.float) * int(self.waterOutputs[0][1])
+        V4 = np.delete(np.asarray(self.waterOutV), [0,1]).astype(np.float) * int(self.waterOutputs[0][1])
         
         # Gas Loops
         G3, V3 = ([], [])
@@ -1096,18 +1096,18 @@ class DEW(object):
         if len(self.mineralInputs) > 0:
             for i in range(len(self.mineralInputs)):
                 for temp in self.tempUsed:
-                    self.mineralsGInp.append(np.multiply(mineralDictionary[self.mineralInputs[i][0]]['delG'][mineralDictionary[self.mineralInputs[i][0]]['Temperature'].index(temp)], int(self.mineralInputs[i][1]))) 
-                    self.mineralsVInp.append(np.multiply(mineralDictionary[self.mineralInputs[i][0]]['delV'][mineralDictionary[self.mineralInputs[i][0]]['Temperature'].index(temp)], int(self.mineralInputs[i][1]))) 
-            dG = np.sum([dG, np.sum([self.mineralsGInp], axis = 0)], axis = 0)
-            dV = np.sum([dV, np.sum([self.mineralsVInp], axis = 0)], axis = 0)     
+                    self.mineralInpGibbs.append(np.multiply(mineralDictionary[self.mineralInputs[i][0]]['delG'][mineralDictionary[self.mineralInputs[i][0]]['Temperature'].index(temp)], int(self.mineralInputs[i][1]))) 
+                    self.mineralInpV.append(np.multiply(mineralDictionary[self.mineralInputs[i][0]]['delV'][mineralDictionary[self.mineralInputs[i][0]]['Temperature'].index(temp)], int(self.mineralInputs[i][1]))) 
+            dG = np.sum([dG, np.sum([self.mineralInpGibbs], axis = 0)], axis = 0)
+            dV = np.sum([dV, np.sum([self.mineralInpV], axis = 0)], axis = 0)     
             
         if len(self.mineralOutputs) > 0:
             for i in range(len(self.mineralOutputs)):
                 for temp in self.tempUsed:
-                    self.mineralsGOutput.append(np.multiply(mineralDictionary[self.mineralOutputs[i][0]]['delG'][mineralDictionary[self.mineralOutputs[i][0]]['Temperature'].index(temp)], int(self.mineralInputs[i][1]))) 
-                    self.mineralsVOutput.append(np.multiply(mineralDictionary[self.mineralOutputs[i][0]]['delV'][mineralDictionary[self.mineralOutputs[i][0]]['Temperature'].index(temp)], int(self.mineralInputs[i][1]))) 
-            dG = np.sum([dG, -np.sum([self.mineralsGOutput],axis = 0)], axis = 0)
-            dV = np.sum([dV, -np.sum([self.mineralsVOutput],axis = 0)], axis = 0)  
+                    self.mineralOutGibbs.append(np.multiply(mineralDictionary[self.mineralOutputs[i][0]]['delG'][mineralDictionary[self.mineralOutputs[i][0]]['Temperature'].index(temp)], int(self.mineralInputs[i][1]))) 
+                    self.mineralOutV.append(np.multiply(mineralDictionary[self.mineralOutputs[i][0]]['delV'][mineralDictionary[self.mineralOutputs[i][0]]['Temperature'].index(temp)], int(self.mineralInputs[i][1]))) 
+            dG = np.sum([dG, -np.sum([self.mineralOutGibbs],axis = 0)], axis = 0)
+            dV = np.sum([dV, -np.sum([self.mineralOutV],axis = 0)], axis = 0)  
             
         self.logK = []
         self.delG = []
