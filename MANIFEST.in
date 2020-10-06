@@ -9,3 +9,4 @@ include DEWPython/resources/water_gibbs.csv
 include DEWPython/dpronsbl.dat
 include DEWPython/resources/SUPCRTBL.exe
 include DEWPython/resources/supcrt96.exe
+include DEWPython/resources/dpronshp.dat
