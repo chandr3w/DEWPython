@@ -685,14 +685,14 @@ class DEW(object):
                     templow = int(input('Input the minimum temperature'))
                     temphigh = int(input('Input the maximum temperature'))
                     tempstep = int(input('Input the temperature step'))
-                    pmin = int(input('Input the minimum pressure'))
-                    pmax = int(input('Input the maximum pressure'))
-                    pstep = input('Input the pressure step')
+                    pmin = float(input('Input the minimum pressure (Kb)'))
+                    pmax = float(input('Input the maximum pressure (Kb)'))
+                    pstep = float(input('Input the pressure step (Kb)'))
                     validBool = True
                 except ValueError:
                     print('You have entered a non-integer value, please start again')
             tempArr = np.arange(start= templow, stop = temphigh + 1, step = tempstep)
-            parrHelp = np.arange(start= pmin, stop = pmax + 1, step = pstep)
+            parrHelp = np.arange(start= pmin, stop = pmax + .1, step = pstep)
             for i in range(len(parrHelp)):
                 pressArr.append([parrHelp[i]]* len(tempArr))
             pressArr = np.multiply(pressArr, 1000)
