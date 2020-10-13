@@ -1,5 +1,6 @@
 include LICENSE.txt
 include DEWPython/resources/mineralDictionary.txt
+include DEWPython/resources/extendMineralDictionary.txt
 include DEWPython/resources/aqueousLst.txt
 include DEWPython/resources/gasLst.txt
 include DEWPython/resources/input.csv
