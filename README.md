@@ -3,7 +3,7 @@
 [![License: MIT License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Twitter Follow](https://img.shields.io/twitter/follow/chandr3w.svg?style=flat-square&logo=twitter&label=Follow)](https://twitter.com/chandr3w)
 
-V1.1.0
+V1.2.0
 
 The DEW package allows the user to compute the thermodynamic and elastic properties of various aqueous inputs for a general range of 100-1200C and a pressure range of 1.0-60 Kb. It is based on the [DEW spreadsheet](http://www.dewcommunity.org/) and behaves similarly.The DEW package additionally provides integrated support for [SUPCRTBL](https://models.earth.indiana.edu/supcrtbl.php) and can be used to directly import and compare species between the two models.
 
