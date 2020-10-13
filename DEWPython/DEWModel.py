@@ -26,6 +26,10 @@ import os.path as op
 resource_package = 'DEWPython'
 min_path = '/'.join(('resources', 'mineralDictionary.txt'))
 mineralPath = pkg_resources.resource_filename(resource_package, min_path)
+
+min_path2 = '/'.join(('resources', 'extendMineralDictionary.txt'))
+mineralPath2 = pkg_resources.resource_filename(resource_package, min_path2)
+
 gas_path = '/'.join(('resources', 'gasLst.txt'))
 gasPath = pkg_resources.resource_filename(resource_package, gas_path)
 aq_path = '/'.join(('resources', 'aqueousLst.txt'))
@@ -1095,17 +1099,21 @@ class DEW(object):
         # Adding the mineral contributions if they exist, must be at the same temperatures and pressures 
         if len(self.mineralInputs) > 0:
             for i in range(len(self.mineralInputs)):
+                if self.psat == False:
+                    myMinPath = mineralDictionary2
+                else: 
+                    myMinPath = mineralDictioanry
                 for temp in self.tempUsed:
-                    self.mineralInpGibbs.append(np.multiply(mineralDictionary[self.mineralInputs[i][0]]['delG'][mineralDictionary[self.mineralInputs[i][0]]['Temperature'].index(temp)], int(self.mineralInputs[i][1]))) 
-                    self.mineralInpV.append(np.multiply(mineralDictionary[self.mineralInputs[i][0]]['delV'][mineralDictionary[self.mineralInputs[i][0]]['Temperature'].index(temp)], int(self.mineralInputs[i][1]))) 
+                    self.mineralInpGibbs.append(np.multiply(myMinPath[self.mineralInputs[i][0]]['delG'][myMinPath[self.mineralInputs[i][0]]['Temperature'].index(temp)], int(self.mineralInputs[i][1]))) 
+                    self.mineralInpV.append(np.multiply(myMinPath[self.mineralInputs[i][0]]['delV'][myMinPath[self.mineralInputs[i][0]]['Temperature'].index(temp)], int(self.mineralInputs[i][1]))) 
             dG = np.sum([dG, np.sum([self.mineralInpGibbs], axis = 0)], axis = 0)
             dV = np.sum([dV, np.sum([self.mineralInpV], axis = 0)], axis = 0)     
             
         if len(self.mineralOutputs) > 0:
             for i in range(len(self.mineralOutputs)):
                 for temp in self.tempUsed:
-                    self.mineralOutGibbs.append(np.multiply(mineralDictionary[self.mineralOutputs[i][0]]['delG'][mineralDictionary[self.mineralOutputs[i][0]]['Temperature'].index(temp)], int(self.mineralInputs[i][1]))) 
-                    self.mineralOutV.append(np.multiply(mineralDictionary[self.mineralOutputs[i][0]]['delV'][mineralDictionary[self.mineralOutputs[i][0]]['Temperature'].index(temp)], int(self.mineralInputs[i][1]))) 
+                    self.mineralOutGibbs.append(np.multiply(myMinPath[self.mineralOutputs[i][0]]['delG'][myMinPath[self.mineralOutputs[i][0]]['Temperature'].index(temp)], int(self.mineralInputs[i][1]))) 
+                    self.mineralOutV.append(np.multiply(myMinPath[self.mineralOutputs[i][0]]['delV'][myMinPath[self.mineralOutputs[i][0]]['Temperature'].index(temp)], int(self.mineralInputs[i][1]))) 
             dG = np.sum([dG, -np.sum([self.mineralOutGibbs],axis = 0)], axis = 0)
             dV = np.sum([dV, -np.sum([self.mineralOutV],axis = 0)], axis = 0)  
             
