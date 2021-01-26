@@ -43,7 +43,7 @@ denPath = pkg_resources.resource_filename(resource_package, den_path)
 g_path = '/'.join(('resources', 'water_gibbs.csv'))
 gPath = pkg_resources.resource_filename(resource_package, g_path)
 sup_path = '/'.join(('resources', 'supcrt96.exe'))
-supPath =  pkg_resources.resource_filename(resource_package, sup_path)
+sup_Path =  pkg_resources.resource_filename(resource_package, sup_path)
 
 global Tr, bigQ, Chi, Pr, E_PrTr, bigR, Psi, Theta, Upsilon, Conversion, mineralDictionary
 
@@ -124,19 +124,21 @@ Conversion = 41.8393
 # # An Object Class that Can Calculate and Return Parameters for Different Options of the Deep Earth Water Model
 
 # In[8]:
-def aqueous_options():
+def search(string):
     for item in nameLst:
-        print(item)
-def gas_options():
+        if str.lower(string) in str.lower(item):
+            print(item)
     for item in GasLst:
-        print(item)
-def mineral_options():
+        if str.lower(string) in str.lower(item):
+            print(item)
     for key in mineralDictionary:
-        print(key)
+        if str.lower(string) in str.lower(item):
+            print(key)
 
 
 class DEW(object):
     def __init__(self):
+       
         # User Option Parameters
         self.ptInput = 'Psat'
         '''The temperature and pressure input, options are Regular, Psat, or custom. Default is regular'''
@@ -291,7 +293,11 @@ class DEW(object):
         '''Stores the output from calculate_supcrt'''
         
 
-    
+    def clear(self):
+        '''Clears variables'''
+        self.__init__()
+        return
+        
     def set_inputs(self):
         '''Call this to set the input Arrays. This is not dependent on anything else being called first.'''
         # A list of integers
@@ -305,7 +311,7 @@ class DEW(object):
         self.aqueousInputs = []
         self.gasInputs = []
         
-        while mineralCount < 5:
+        while mineralCount < 15:
             mineralCount += 1
             validBool = False
             while not validBool:
@@ -333,7 +339,7 @@ class DEW(object):
             self.mineralInputs.append([inp, inp2])
             
             
-        while aqCount <6:
+        while aqCount <15:
             aqCount += 1
             validBool = False
             while not validBool:
@@ -360,7 +366,7 @@ class DEW(object):
             self.aqueousInputs.append([inp, inp2])
             
             
-        while gasCount < 3:
+        while gasCount < 15:
             gasCount += 1
             validBool = False
             while not validBool:
@@ -427,7 +433,7 @@ class DEW(object):
         self.waterOutputs = []
 
 
-        while mineralCount < 5:
+        while mineralCount < 15:
             mineralCount += 1
             validBool = False
             while not validBool:
@@ -450,7 +456,7 @@ class DEW(object):
             self.mineralOutputs.append([inp, inp2])
             
             
-        while aqCount <6:
+        while aqCount <15:
             aqCount += 1
             validBool = False
             while not validBool:
@@ -476,7 +482,7 @@ class DEW(object):
                 break
             self.aqueousOutputs.append([inp, inp2])
             
-        while gasCount < 3:
+        while gasCount < 15:
             gasCount += 1
             validBool = False
             while not validBool:
@@ -616,7 +622,7 @@ class DEW(object):
             else:
                 print('Please enter one of the provided options')
         if self.WaterFreeEq == "Custom" or self.dielectricEq == "Custom" or self.RhoOfWater == "Custom":
-            self.dielectricCollection, self.densityCollection, self.gibbsCollection = import_custom_sheets()
+            self.dielectricCollection, self.densityCollection, self.gibbsCollection = self.import_custom_sheets()
         return
     
     
@@ -649,7 +655,7 @@ class DEW(object):
 
         gibbsOfWater = pd.read_csv(gPath, header = None)
         gibbs = gibbsOfWater.to_numpy()
-        gibbs = gibbs[4:,1:]
+        gibbs = gibbs[3:,:]
         gibbsTrim = gibbs[1:, 1:]
         gibbsCollection = []
         for row in range(len(gibbsTrim)):
@@ -753,13 +759,16 @@ class DEW(object):
             self.diaEq = 5
         
         # write code to take in custom Rho, G, and Water Values here
+        self.densityCollection = np.asarray(self.densityCollection).astype(float)
+        self.dielectricCollection = np.asarray(self.dielectricCollection).astype(float)
+        self.gibbsCollection = np.asarray(self.gibbsCollection).astype(float)
         
         # Sets the water density array
         for i in range(len(self.pressureUsed)):        
             # For the custom array
             if self.RhoOfWater =="Custom" or (self.forceCustom == True and self.pressureUsed[i] < 1000):
-                idx = np.intersect1d(np.where(np.asarray(self.densityCollection) == pressureUsed[i]/1000), np.where(np.asarray(self.densityCollection) == self.tempUsed[i]))[0]
-                if not np.isnan(RhoCollection[idx][2]):
+                idx = np.intersect1d(np.where(np.asarray(self.densityCollection) == self.pressureUsed[i]/1000), np.where(np.asarray(self.densityCollection) == self.tempUsed[i]))[0]
+                if not np.isnan(self.densityCollection[idx][2]):
                     self.RhoWatArr.append(self.densityCollection[idx][2])
                 else:
                     self.RhoWatArr.append(0)
@@ -771,7 +780,7 @@ class DEW(object):
             
             # for the custom array
             if self.dielectricEq == "Custom":
-                idx = np.intersect1d(np.where(np.asarray(self.dielectricCollection) == pressureUsed[i]/1000), np.where(np.asarray(self.dielectricCollection) == self.tempUsed[i]))[0]
+                idx = np.intersect1d(np.where(np.asarray(self.dielectricCollection) == self.pressureUsed[i]/1000), np.where(np.asarray(self.dielectricCollection) == self.tempUsed[i]))[0]
                 if not np.isnan(self.dielectricCollection[idx][2]):
                     self.DiaArr.append(self.dielectricCollection[idx][2])
                 else:
@@ -799,7 +808,7 @@ class DEW(object):
         # Sets up custom Gibbs of Water Array:
         if self.WaterFreeEq == "Custom":
             for i in range(len(self.pressureUsed)):
-                idx = np.intersect1d(np.where(np.asarray(self.gibbsCollection) == pressureUsed[i]/1000), np.where(np.asarray(self.gibbsCollection) == self.tempUsed[i]))[0]
+                idx = np.intersect1d(np.where(np.asarray(self.gibbsCollection) == self.pressureUsed[i]/1000), np.where(np.asarray(self.gibbsCollection) == self.tempUsed[i]))[0]
                 if not np.isnan(self.gibbsCollection[idx][2]):
                     self.GibbsH2O.append(self.gibbsCollection[idx][2])
                 else:
@@ -1369,7 +1378,7 @@ class DEW(object):
         returnLst = {}
        
         if customFile != None:
-            filename = op.dirname(op.abspath(__file__)) + '\\resources\\' + customFile
+            filename = op.dirname(op.abspath(os.getcwd()))+ '\\' + customFile
         elif len(self.supcrtFile) ==0:
             raise ValueError("You haven't run SUPCRT yet")
         else:
@@ -1486,7 +1495,100 @@ class DEW(object):
                 subDict['delCp'] = dlCpLst
                 returnLst[returnVar] = subDict
             self.supcrtOut = returnLst
+    def psat_supcrt(rxn_lst, reaction_type = 'psat'):
+    '''Takes a list of reaction lists (comprised of tuples) and runs supcrt'''
+    for reaction in rxn_lst:
+        proc = subprocess.Popen('supcrt96.exe',stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+        pout = proc.stdout
+        pin = proc.stdin
+        it = 0
+        rxnVar = 'realReac.con'
+        
+        if reaction_type != 'psat':
+            rxnVar = 'Xtend.con'
+            
+        title = input('What is the title of your reaction?')
+        comm = ['n', 'updateSlop1.dat', '2', rxnVar, '2', '1', title]
+        for component in reaction:
+            if component[1] not in nameLst:
+                print(str(component[1]) + ' is not in the slop16 database. Please check your spelling and try again. You can use the search function the query the database.')
+            else:
+                comm.append(str(component[0]) + ' ' + component[1])
+                
+        comm.append('0')
+        comm.append('y')
+        comm.append('n')
+        comm.append(title + '.txt')
+        comm.append('1')
+        comm.append('1')
+        comm.append('empty')
+
+        def outLoop():
+            running = True
+            while(running):
+                line = pout.readline().decode(sys.stdout.encoding)
+                running='\n' in line
+
+        threading.Thread(target=outLoop).start()
+        while(proc.poll() is None): 
+            try:
+                inp = comm[it]
+                it += 1
+            #     inp = bytearray(input('User Input: ')+'\n',sys.stdin.encoding)
+                if(proc.poll() is None):
+                    pin.write(bytearray(inp+'\n',sys.stdin.encoding))
+                    pin.flush()
+            except:
+                pass
+    return
     
+    def supcrt_inp(rxn_lst, reaction_type = 'psat'):
+        '''Takes a list of reaction lists (comprised of tuples) and runs supcrt'''
+        for reaction in rxn_lst:
+            proc = subprocess.Popen('supcrt96.exe',stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+            pout = proc.stdout
+            pin = proc.stdin
+            it = 0
+            rxnVar = 'realReac.con'
+
+            if reaction_type != 'psat':
+                rxnVar = 'Xtend.con'
+
+            title = input('What is the title of your reaction?')
+            comm = ['n', 'updateSlop1.dat', '2', rxnVar, '2', '1', title]
+            for component in reaction:
+                if component[1] not in nameLst:
+                    print(str(component[1]) + ' is not in the slop16 database. Please check your spelling and try again. You can use the search function the query the database.')
+                else:
+                    comm.append(str(component[0]) + ' ' + component[1])
+
+            comm.append('0')
+            comm.append('y')
+            comm.append('n')
+            comm.append(title + '.txt')
+            comm.append('1')
+            comm.append('1')
+            comm.append('empty')
+
+            def outLoop():
+                running = True
+                while(running):
+                    line = pout.readline().decode(sys.stdout.encoding)
+                    running='\n' in line
+
+            threading.Thread(target=outLoop).start()
+            while(proc.poll() is None): 
+                try:
+                    inp = comm[it]
+                    it += 1
+                #     inp = bytearray(input('User Input: ')+'\n',sys.stdin.encoding)
+                    if(proc.poll() is None):
+                        pin.write(bytearray(inp+'\n',sys.stdin.encoding))
+                        pin.flush()
+                except:
+                    pass
+        return
+        
     def calculate_supcrt(self, customFile = None):
         '''Calculates an output of thermodynamic properties from a SUPCRTBL output file in the same directory. User must input 
         stopping temperature and pressure to allow the program to calculate properly.
@@ -1497,12 +1599,14 @@ class DEW(object):
         max_temp = float(max_temp)
         max_press = float(max_press)
         if customFile != None:
-            filename = op.dirname(op.abspath(__file__)) + '\\resources\\' + customFile
+            file_Path = op.dirname(op.abspath(os.getcwd()))+ '\\' + customFile
         elif len(self.supcrtFile) ==0:
             raise ValueError("You haven't run SUPCRT yet")
         else:
             filename = self.supcrtFile
-        with open(filename, 'r') as f:
+            filePath='/'.join(('resources', filename))
+            file_Path =  pkg_resources.resource_filename(resource_package, filepath)
+        with open(file_Path, 'r') as f:
             impor = f.read()
             import_data = impor.replace('\t', ' ')
 
