@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='DEWPython',
-    version='1.2.0',
+    version='1.3.0',
     author='chandr3w',
     author_email='amchan@caltech.edu',
     description='Python-Implemented Deep Earth Water Model',
