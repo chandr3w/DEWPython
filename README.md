@@ -30,7 +30,14 @@ DEW is an object-oriented class dependent on the DEWEquations class. To run it, 
 ```
 reaction = dm.DEW()
 ```
+If you run
+```
+reaction.otions()
+```
+It will give you a brief overview of the documentation that follows.
+
 From here, set the inputs, outputs, and preferences interactively. *Throughout every stage in the model, parameters can be queried for debugging. See the documentation for more details.* 
+
 ```
 reaction.set_inputs()
 # Initialize the LHS of the reaction
@@ -38,6 +45,10 @@ reaction.set_outputs()
 # Initialize the RHS of the reaction
 reaction.set_preferences()
 # By default, the reaction runs at Psat conditions (see documentation). The set_preferences() method interactively changes this.
+```
+If you are unsure what the name of your inputs/outputs are in slop16, you can run a search on a string of components/part of the name that your input or output contains
+```
+dm.search(string)
 ```
 If custom options are selected in the preferences, the relevant CSV files must be updated. Otherwise, you must run the following command:
 ```
@@ -58,6 +69,10 @@ reaction.logK
 reaction.make_plots()
 # Automatically constructs the plots for the model.
 ```
+You can now also export your plots to CSV format using the command
+```
+reaction.export_to_csv()
+```
 
 ### Running supcrt
 Included in the DEW_Folder is supcrt96 and SUPCRTBL, a similar program to calculate the properties of species at different temeperature and pressure conditions. The defauly is set to supcrt96.
@@ -77,6 +92,21 @@ Finally, run:
 reaction.make_supcrt_plots()
 ```
 To produce the same plots as DEW.
+
+### Automatic Input
+New to version 1.3.1, you can now run supcrt/DEW without running the input loops. For DEW you can use  
+```
+reaction.run(pt_arr, min_inp =[], aq_inp = [], g_inp = [], h2o_inp = 0, min_out = [],aq_out =[], g_out = [],h2o_out = 0, 
+        ptInp = 'Psat', rhoWat = 'Z&D 2005', forceBool = False, dieEQ = 'Supcrt', forceSC = True, 
+        WFEQ ='D&H 1978', dsV = True, pdsV = True, DV = True, EQ = 1, dEQ = 1, pst = True, mWn = 1))
+```
+Where pt_arr is either of shape ((tmin, tmax, tstep)) for Psat inputs or (((tmin, tmax, tstep),(pmin, pmax, pstep))) for non-psat.
+
+Similarly, for supcrt you can run
+```
+def supcrt_inp(rxn_lst, reaction_type = 'psat')
+```
+Where the first value is a list of reaction arrays where each array is split into tuples of reactants formatted akin to supcrt (e.g., (-1, Ca+2)) and the reaction type determines which of the pre-established reaction files are run.
 
 ### Range of validity
 Certain equations within DEW are valid to certain values (as are the properties of specific mineral species). For more information please see the [DEW website](http://www.dewcommunity.org/)
