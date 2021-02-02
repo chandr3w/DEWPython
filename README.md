@@ -122,7 +122,7 @@ Certain equations within DEW are valid to certain values (as are the properties 
 
 This project is licensed under the MIT License :
 
-Copyright (c) 2020, A. Chan
+Copyright (c) 2021, A. Chan
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files, to deal
