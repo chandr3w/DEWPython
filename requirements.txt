@@ -1,0 +1,7 @@
+Python: 3.6.10
+
+## Required Packages ##
+pandas: 0.25.3
+numpy: 1.18.5
+json: 2.0.9
+matplotlib: 3.2.2
