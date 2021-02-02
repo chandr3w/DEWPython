@@ -280,6 +280,27 @@ class DEW(object):
         self.delV = []
         '''Stores the list of all delV values with temperatures and pressures'''
         
+        
+        # Variables to Help with Plotting
+        self.pressRed = []
+        '''Reduced pressure list with no repeats'''
+        self.tempRed = []
+        '''Reduced temperature list with no repeats'''
+
+        self.pLogK = []
+        '''LogK split into arrays with respect to the number of isobars'''
+        self.pDelG = []
+        '''DelG split into arrays with respect to the number of isobars'''
+        self.pDelV = []
+        '''DelV split into arrays with respect to the number of isobars'''
+        
+        self.tLogK = []
+        '''LogK split into arrays with respect to the number of isotherms'''
+        self.tDelG = []
+        '''DelG split into arrays with respect to the number of isotherms'''
+        self.tDelV = []
+        '''DelV split into arrays with respect to the number of isotherms'''
+        
         # Variables to run SUPCRTBL
         self.proc = None
         '''Needed to run supcrt'''
@@ -1132,6 +1153,49 @@ class DEW(object):
             self.logK.append([-dG[0][i]/(2.302585*self.tKelvin[i]*bigR), self.tempUsed[i], self.pressureUsed[i]])
             self.delG.append([dG[0][i], self.tempUsed[i], self.pressureUsed[i]])
             self.delV.append([dV[0][i], self.tempUsed[i], self.pressureUsed[i]])
+            
+            
+        # Sets plotting arrays for convenient plotting of isotherms/isobars    
+        if self.ptInput!= 'Psat' or self.psat == False:
+            self.pressRed = list(set(self.pressureUsed))
+            self.tempRed = list(set(self.tempUsed))
+            self.pressRed.sort()
+            self.tempRed.sort()
+            
+            temppLogK = defaultdict(list)
+            temppDelG = defaultdict(list)
+            temppDelV = defaultdict(list)
+            temptLogK = defaultdict(list)
+            temptDelG = defaultdict(list)
+            temptDelV = defaultdict(list)
+
+            for logK, temp, pressure in self.logK:
+                temppLogK[pressure].append(logK)
+                temptLogK[temp].append(logK)
+
+            for delG, temp, pressure in a.delG:
+                temppDelG[pressure].append(delG)
+                temptDelG[temp].append(delG)
+
+            for delV, temp, pressure in a.delV:
+                temppDelV[pressure].append(delV)
+                temptDelV[temp].append(delV)
+
+            
+            for item in temppDelG:
+                self.pDelG.append(temppDelG[item])
+            for item in temppDelV:
+                self.pDelV.append(temppDelV[item])
+            for item in temppLogK:
+                self.pLogK.append(temppLogK[item])
+                
+            for item in temptDelG:
+                self.tDelG.append(temptDelG[item])
+            for item in temptDelV:
+                self.tDelV.append(temptDelV[item])
+            for item in temptLogK:
+                self.tLogK.append(temptLogK[item])
+              
         return
 
        
@@ -1337,189 +1401,109 @@ class DEW(object):
  ###### MAKE PLOTS###########
     
     def make_plots(self):
-        '''A final function that the user calls to make the plots possible in the DEW Excel spreadsheet. '''
+        '''A final function that the user calls to make the plots possible in the Excel spreadsheet. '''
         plt.clf()
-        press = list(set(self.pressureUsed))
-        temper = list(set(self.tempUsed))
-    
-        press.sort()
-        temper.sort()
-        
-        pLogK = defaultdict(list)
-        pDelG = defaultdict(list)
-        pDelV = defaultdict(list)
-        tLogK = defaultdict(list)
-        tDelG = defaultdict(list)
-        tDelV = defaultdict(list)
-        
-        for logK, temp, pressure in self.logK:
-            pLogK[pressure].append(logK)
-            tLogK[temp].append(logK)
-            
-        for delG, temp, pressure in self.delG:
-            pDelG[pressure].append(delG)
-            tDelG[temp].append(delG)
-            
-        for delV, temp, pressure in self.delV:
-            pDelV[pressure].append(delV)
-            tDelV[temp].append(delV)
-            
-        # Plots for logK
-        try:
-            pKplot = sorted(pLogK.items()) # sorted by key, return a list of tuples
-            x1, y1 = zip(*pKplot) # unpack a list of pairs into two tuples
+        ###### PSAT PLOTS #######
+        if self.psat == True or self.ptInput =='Psat':
             plt.figure()
-            plt.plot(x1, y1)
-            if self.psat == False:
-                plt.legend(temper, title = "Temperatures (C)")
-            plt.xlabel('Pressure (bar)')
-            plt.ylabel('LogK')
-            plt.title('Pressure vs. LogK')
-            plt.show()
-        except:
-            y1 = list(y1)
-            xlst = []
-            ylst = []
-            for i in range(len(y1)):
-                for j in range(len(y1[i])):
-                    xlst.append(x1[i])
-                    ylst.append(y1[i][j])
-            plt.plot(xlst,ylst)
+            plt.plot(self.pressureUsed, [i[0] for i in self.logK])
             plt.xlabel('Pressure (bar)')
             plt.ylabel('LogK')
             plt.title('Pressure vs. LogK Psat Curve')
-                    
-        plt.figure()
-        
-        try:
-            tKplot = sorted(tLogK.items()) # sorted by key, return a list of tuples
-            x2, y2 = zip(*tKplot) # unpack a list of pairs into two tuples
+            plt.show()
+            
             plt.figure()
-            plt.plot(x2, y2)
-            if self.psat == False:
-                plt.legend(press, title = "Pressure (Bar)")
-            plt.xlabel('Temperature (C)')
+            plt.plot(self.pressureUsed, [i[0] for i in self.delG])
+            plt.xlabel('Pressure (bar)')
+            plt.ylabel('$\Delta$G')
+            plt.title('Pressure vs. $\Delta$G Psat Curve')
+            plt.show()
+            
+            plt.figure()
+            plt.plot(self.pressureUsed, [i[0] for i in self.delV])
+            plt.xlabel('Pressure (bar)')
+            plt.ylabel('$\Delta$V')
+            plt.title('Pressure vs. $\Delta$V Psat Curve')
+            plt.show()
+            
+            plt.figure()
+            plt.plot(self.tempUsed, [i[0] for i in self.logK])
+            plt.xlabel('Temperature ($^\circ$ C)')
             plt.ylabel('LogK')
-            plt.title('Temperature vs. LogK')
+            plt.title('Temperature vs. LogK Psat Curve')
             plt.show()
             
-        except:
-            y2 = list(y2)
-            xlst = []
-            ylst = []
-            for i in range(len(y2)):
-                for j in range(len(y2[i])):
-                    xlst.append(x2[i])
-                    ylst.append(y2[i][j])
-            plt.plot(xlst,ylst)
-            plt.xlabel('Temp (C)')
-            plt.ylabel('LogK')
-            plt.title('Temp vs. LogK Psat Curve')
-
-        plt.figure()
-        # Plots for delG
-        try:
-            pDelGPlot = sorted(pDelG.items()) # sorted by key, return a list of tuples
-            x3, y3 = zip(*pDelGPlot) # unpack a list of pairs into two tuples
             plt.figure()
-            plt.plot(x3, y3)
-            if self.psat == False:
-                plt.legend(temper, title = "Temperatures (C)")
-            plt.xlabel('Pressure (bar)')
-            plt.ylabel('Change in Free Energy (DelG)')
-            plt.title('Pressure vs. DelG')
+            plt.plot(self.tempUsed, [i[0] for i in self.delG])
+            plt.xlabel('Temperature ($^\circ$ C)')
+            plt.ylabel('$\Delta$G')
+            plt.title('Temperature vs. $\Delta$G Psat Curve')
             plt.show()
             
-        except:
-            y3 = list(y3)
-            xlst = []
-            ylst = []
-            for i in range(len(y3)):
-                for j in range(len(y3[i])):
-                    xlst.append(x3[i])
-                    ylst.append(y3[i][j])
-            plt.plot(xlst,ylst)
-            plt.xlabel('Pressure (bar)')
-            plt.ylabel('DelG')
-            plt.title('Pressure vs. DelG Psat Curve')
-        
-        plt.figure()
-        try:
-            tDelGPlot = sorted(tDelG.items()) # sorted by key, return a list of tuples
-            x4, y4 = zip(*tDelGPlot) # unpack a list of pairs into two tuples
             plt.figure()
-            plt.plot(x4, y4)
-            if self.psat == False:
-                plt.legend(press, title = "Pressure (Bar)")
-            plt.xlabel('Temperature (C)')
-            plt.ylabel('Change in Free Energy (DelG)')
-            plt.title('Temperature vs. DelG')
+            plt.plot(self.tempUsed, [i[0] for i in self.delV])
+            plt.xlabel('Temperature ($^\circ$ C)')
+            plt.ylabel('$\Delta$V')
+            plt.title('Temperature vs. $\Delta$V Psat Curve')
             plt.show()
             
-        except:
-            y4 = list(y4)
-            xlst = []
-            ylst = []
-            for i in range(len(y4)):
-                for j in range(len(y4[i])):
-                    xlst.append(x4[i])
-                    ylst.append(y4[i][j])
-            plt.plot(xlst,ylst)
-            plt.xlabel('Temp (C)')
-            plt.ylabel('DelG')
-            plt.title('Temp vs. DelG Psat Curve')
-            plt.legend(title = 'Psat Curve')
-        plt.figure()
-        # Plots for delV
-        try: 
-            pDelVPlot = sorted(pDelV.items()) # sorted by key, return a list of tuples
-            x5, y5 = zip(*pDelVPlot) # unpack a list of pairs into two tuples
+        ####### NON PSAT PLOTS ########    
+        else:
+            # T Plots
             plt.figure()
-            plt.plot(x5, y5)
-            if self.psat == False:
-                plt.legend(temper, title = "Temperatures (C)")
-            plt.xlabel('Pressure (bar)')
-            plt.ylabel('Change in Volume (DelV)')
-            plt.title('Pressure vs. DelV')
+            for i in self.pDelG:
+                plt.plot(self.tempRed, i)
+                plt.legend(self.pressRed,bbox_to_anchor=(1.05, 1), title = 'Pressure (bar)', loc='upper left')
+                plt.xlabel('Temperature ($^\circ$C)')
+                plt.ylabel('$\Delta$G')
+                plt.title('Temperature vs. $\Delta$G')
             plt.show()
-        except:
-            y5 = list(y5)
-            xlst =[]
-            ylst = []
-            for i in range(len(y5)):
-                for j in range(len(y5[i])):
-                    xlst.append(x5[i])
-                    ylst.append(y5[i][j])
-            plt.plot(xlst,ylst)
-            plt.xlabel('Temp (C)')
-                    
-            plt.xlabel('Pressure (bar)')
-            plt.ylabel('DelV')
-            plt.title('Pressure vs. DelV Psat Curve')
-                    
-        plt.figure()            
-        try:
-            tDelVPlot = sorted(tDelV.items()) # sorted by key, return a list of tuples
-            x6, y6 = zip(*tDelVPlot) # unpack a list of pairs into two tuples
+                
             plt.figure()
-            plt.plot(x6, y6)
-            plt.legend(press, title = "Pressure (Bar)")
-            plt.xlabel('Temperature (C)')
-            plt.ylabel('Change in Volume (DelV)')
-            plt.title('Temperature vs. DelV')
+            for i in self.pDelV:
+                plt.plot(self.tempRed, i)
+                plt.legend(self.pressRed,bbox_to_anchor=(1.05, 1), title = 'Pressure (bar)', loc='upper left')
+                plt.xlabel('Temperature ($^\circ$C)')
+                plt.ylabel('$\Delta$V')
+                plt.title('Temperature vs. $\Delta$V')
             plt.show()
-        except:
-            xlst = []
-            ylst = []
-            y6 = list(y6)
-            for i in range(len(y6)):
-                for j in range(len(y6[i])):
-                    xlst.append(x6[i])
-                    ylst.append(y6[i][j])
-            plt.plot(xlst,ylst)
-            plt.xlabel('Temp (C)')
-            plt.ylabel('DelV')
-            plt.title('Temp vs. DelV Psat Curve')
+                          
+            plt.figure()
+            for i in self.pLogK:
+                plt.plot(self.tempRed, i)
+                plt.legend(self.pressRed,bbox_to_anchor=(1.05, 1), title = 'Pressure (bar)', loc='upper left')
+                plt.xlabel('Temperature ($^\circ$C)')
+                plt.ylabel('LogK')
+                plt.title('Temperature vs. LogK')
+            plt.show()
+                          
+            # P Plots
+            plt.figure()              
+            for i in self.tDelG:
+                plt.plot(self.pressRed, i)
+                plt.legend(self.tempRed,bbox_to_anchor=(1.05, 1), title = 'Temperature ($^\circ$C)', loc='upper left')
+                plt.xlabel('Pressure (bar)')
+                plt.ylabel('$\Delta$G')
+                plt.title('Pressure vs. $\Delta$G')
+            plt.show()
+            
+            plt.figure()    
+            for i in self.tDelV:
+                plt.plot(self.pressRed, i)
+                plt.legend(self.tempRed,bbox_to_anchor=(1.05, 1), title = 'Temperature ($^\circ$C)', loc='upper left')
+                plt.xlabel('Pressure (bar)')
+                plt.ylabel('$\Delta$V')
+                plt.title('Pressure vs. $\Delta$V')
+            plt.show()
+            
+            plt.figure()              
+            for i in self.tLogK:
+                plt.plot(self.pressRed, i)
+                plt.legend(self.tempRed,bbox_to_anchor=(1.05, 1), title = 'Temperature ($^\circ$C)', loc='upper left')
+                plt.xlabel('Pressure (bar)')
+                plt.ylabel('LogK')
+                plt.title('Pressure vs. LogK')
+            plt.show()
         return
        
        
