@@ -167,7 +167,7 @@ class DEW(object):
         '''A variable that stores the number of the density of water equation. Needs to be renamed'''
         self.diaEq = 1
         '''A variable that stores the number of dielectric constant equation.'''
-        self.psat = False
+        self.psat = True
         '''A variable that stores the Psat option defined by input'''
         self.waterDensity = 1
         '''A variable that stores the number of the density of water equation.'''
@@ -1133,6 +1133,208 @@ class DEW(object):
             self.delG.append([dG[0][i], self.tempUsed[i], self.pressureUsed[i]])
             self.delV.append([dV[0][i], self.tempUsed[i], self.pressureUsed[i]])
         return
+
+       
+       
+###############################       
+####### Methods to auto #######        
+###############################
+
+    def set_tp(self, pt_arr):
+        '''Setting the PT values, but automated for the helperfunction. Can also be used to quick set tp with prompted input'''
+        pressArr = []
+        tempArr = []
+        self.RhoWatArr = []
+        self.DiaArr = []
+        self.QArr =[]
+        self.gibbsLst = []
+        self.logK = []
+        self.vLst = []
+        self.delG = []
+        self.delV = []
+        
+        if self.ptInput == "Custom":
+            ptSheet = pd.read_excel(DEW_Location, sheet_name = 'Input', header = None)
+            ptFinder = ptSheet.to_numpy()
+            pressArr = ptFinder[:,79][5:]
+            tempArr = ptFinder[:,80][5:]
+            storeidx = 0
+            storeidxP = 0
+            for i in range(len(tempArr)):
+                if np.isnan(tempArr[i]) == True:
+                    storeidx = int(i)
+                    break
+            for i in range(len(pressArr)):
+                if np.isnan(pressArr[i]) == True:
+                    storeidxP = int(i)
+                    break
+
+            tempArr = tempArr[:storeidx]
+            pressArr = pressArr[:storeidxP]
+
+        elif self.ptInput == "Regular":
+            try:
+                templow = pt_arr[0][0]
+                temphigh =pt_arr[0][1]
+                tempstep = pt_arr[0][2]
+                pmin = pt_arr[1][0]
+                pmax = pt_arr[1][1]
+                pstep = pt_arr[1][2]
+            except ValueError:
+                print('Your PT array is not formatted correctly. Please use the format [[tmin, tmax, tstep][pmin, pmax, pstep]]')
+            tempArr = np.arange(start= templow, stop = temphigh + 1, step = tempstep)
+            parrHelp = np.arange(start= pmin, stop = pmax + 1, step = pstep)
+            for i in range(len(parrHelp)):
+                pressArr.append([parrHelp[i]]* len(tempArr))
+            pressArr = np.multiply(pressArr, 1000)
+            tempArr = [tempArr] * len(parrHelp)
+            
+        elif self.ptInput == "Psat":
+            try:
+                templow = pt_arr[0]
+                temphigh = pt_arr[1]
+                tempstep = pt_arr[2]
+                validBool = True
+            except ValueError:
+                print('Your input is not formatted correctly. Please use the format for psat of [tmin, tmax, tstep]')
+                    
+            tempArr = np.arange(start= templow, stop = temphigh + 1, step = tempstep)
+            for i in range(len(tempArr)):
+                
+                if tempArr[i] < 100:
+                    pressArr.append(1)
+                else:
+                    pressArr.append(2.1650906415E-11*np.double(tempArr[i])**5 + 0.0008467019353*np.double(tempArr[i])**2 - 0.17973651666*tempArr[i] + 10.7768850763807)
+                
+        else:
+            # If I've done the checking correctly above it should never reach this
+            raise ValueError("You have not set your options yet, please set them before continuing")
+        self.tempUsed = np.ndarray.flatten(np.asarray(tempArr))
+        self.pressureUsed = np.ndarray.flatten(np.asarray(pressArr))
+        self.tKelvin = np.add(self.tempUsed, 273.15)
+        
+        # code to set options in a way the equations can understand
+        if self.ptInput == "Psat":
+            self.psat = True
+        else:
+            self.psat = False
+            
+        if self.RhoOfWater =='Z&D 2005':
+            self.equation = 1
+        elif self.RhoOfWater == 'Z&D 2009':
+            self.equation = 2
+        else:
+            self.equation = 3
+            
+        if self.dielectricEq == "Supcrt":
+            self.diaEq = 1
+        elif self.dielectricEq == "Franck":
+            self.diaEq = 2
+        elif self.dielectricEq == "Fernandez":
+            self.diaEq = 3
+        elif self.dielectricEq == "Sverjensky":
+            self.diaEq = 4
+        else:
+            self.diaEq = 5
+        
+        # write code to take in custom Rho, G, and Water Values here
+        self.densityCollection = np.asarray(self.densityCollection).astype(float)
+        self.dielectricCollection = np.asarray(self.dielectricCollection).astype(float)
+        self.gibbsCollection = np.asarray(self.gibbsCollection).astype(float)
+        
+        # Sets the water density array
+        for i in range(len(self.pressureUsed)):        
+            # For the custom array
+            if self.RhoOfWater =="Custom" or (self.forceCustom == True and self.pressureUsed[i] < 1000):
+                idx = np.intersect1d(np.where(np.asarray(self.densityCollection).astype(float) == self.pressureUsed[i]/1000), np.where(np.asarray(self.densityCollection).astype(float) == self.tempUsed[i]))[0]
+                if not np.isnan(self.densityCollection[idx][2]):
+                    self.RhoWatArr.append(self.densityCollection[idx][2])
+                else:
+                    self.RhoWatArr.append(0)
+            else:
+                self.RhoWatArr.append(DEWEquations.calculateDensity(self.pressureUsed[i], self.tempUsed[i], self.equation, 0.01, self.psat))
+               
+        # Sets the dielectric constant array
+        for i in range(len(self.pressureUsed)):
+            
+            # for the custom array
+            if self.dielectricEq == "Custom":
+                idx = np.intersect1d(np.where(np.asarray(self.dielectricCollection).astype(float) == self.pressureUsed[i]/1000), np.where(np.asarray(self.dielectricCollection).astype(float) == self.tempUsed[i]))[0]
+                if not np.isnan(self.dielectricCollection[idx][2]):
+                    self.DiaArr.append(self.dielectricCollection[idx][2])
+                else:
+                    self.DiaArr.append(0)
+            else:
+                if self.ForceSupcrt == True and self.pressureUsed[i] < 5000 and self.psat == False:
+                    self.DiaArr.append(DEWEquations.calculateEpsilon(self.RhoWatArr[i], self.tempUsed[i], 1, self.psat))
+                else:
+                    self.DiaArr.append(DEWEquations.calculateEpsilon(self.RhoWatArr[i], self.tempUsed[i], self.diaEq, self.psat))
+        
+        
+        # Sets up the Q array
+        for i in range(len(self.pressureUsed)):
+            if self.DisplayVol == True:
+                try:
+                    # Has issues with some Q, not sure if problematic
+                    self.QArr.append(float(DEWEquations.calculateQ(self.pressureUsed[i], self.tempUsed[i], self.RhoWatArr[i], self.equation, self.diaEq, self.psat))*np.double(10)**6)
+                except:
+                    self.QArr.append(0)
+            else:
+                self.QArr.append(0)
+                
+        # Sets up custom Gibbs of Water Array:
+        if self.WaterFreeEq == "Custom":
+            for i in range(len(self.pressureUsed)):
+                idx = np.intersect1d(np.where(np.asarray(self.gibbsCollection).astype(float) == self.pressureUsed[i]/1000), np.where(np.asarray(self.gibbsCollection).astype(float) == self.tempUsed[i]))[0]
+                if not np.isnan(self.gibbsCollection[idx][2]):
+                    self.GibbsH2O.append(self.gibbsCollection[idx][2])
+                else:
+                    self.GibbsH2O.append(0)
+        return
+    def run(self, pt_arr, min_inp =[], aq_inp = [], g_inp = [], h2o_inp = 0, min_out = [],aq_out =[], g_out = [],h2o_out = 0, 
+        ptInp = 'Psat', rhoWat = 'Z&D 2005', forceBool = False, dieEQ = 'Supcrt', forceSC = True, 
+        WFEQ ='D&H 1978', dsV = True, pdsV = True, DV = True, EQ = 1, dEQ = 1, pst = True, mWn = 1):
+
+        if h2o_inp > 0:
+            self.waterInputs = [['yes',h2o_inp]]
+        else:
+            self.waterInputs = [['no',0]]
+        if h2o_out > 0:
+            self.waterOutputs = [['yes',h2o_out]]
+        else:
+            self.waterOutputs = [['no',0]]
+
+        self.mineralInputs = min_inp
+        self.aqueousInputs = aq_inp
+        self.gasInputs = g_inp
+
+        self.mineralOutputs = min_out
+        self.aqueousOutputs = aq_out
+        self.gasOutputs = g_out
+
+
+        self.ptInput = ptInp
+        self.RhoOfWater = rhoWat
+        self.forceCustom = forceBool
+        self.dielectricEq = dieEQ     
+        self.ForceSupcrt = forceSC
+        self.WaterFreeEq =  WFEQ
+        self.DisplayVolOpt = dsV
+        self.PsatDisplayVol = pdsV
+        self.DisplayVol = DV
+        self.equation = EQ
+        self.diaEq = dEQ
+        self.psat = pst
+        self.waterDensity = mWn
+
+        # to actually run:
+        self.set_tp(pt_arr)
+        self.calculate()
+        self.make_plots()
+        return
+       
+       
+ ###### MAKE PLOTS###########
     
     def make_plots(self):
         '''A final function that the user calls to make the plots possible in the DEW Excel spreadsheet. '''
@@ -1320,6 +1522,16 @@ class DEW(object):
             plt.title('Temp vs. DelV Psat Curve')
         return
        
+       
+       
+       
+       
+       
+#############################       
+######### OTHER #############
+#############################       
+       
+       
     def export_to_csv(self):
         dV = [row[0] for row in self.delV]
         dG = [row[0] for row in self.delG]
@@ -1343,7 +1555,19 @@ class DEW(object):
         print('  -After initializing the SUPCRTBL object, run calculate_supcrt to store the supcrt outputs in arrays')
         print('  -You can also use run_supcrt on a supcrt ouput file that has already been run by adding the optional argument of the file name')
         print('  -After this you can run make_supcrt_plots to plot the supcrt files akin the a DEW file')
-        
+   
+   
+   
+
+   
+   
+   
+   
+   
+######################################   
+####### METHODS FOR SUPCRT ###########
+######################################
+
     def outLoop(self):
         '''A helper function to allow SUPCRTBL to run'''
         running = True
