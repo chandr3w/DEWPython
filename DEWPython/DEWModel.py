@@ -1703,51 +1703,51 @@ class DEW(object):
                 returnLst[returnVar] = subDict
             self.supcrtOut = returnLst
     def psat_supcrt(rxn_lst, reaction_type = 'psat'):
-    '''Takes a list of reaction lists (comprised of tuples) and runs supcrt'''
-    for reaction in rxn_lst:
-        proc = subprocess.Popen('supcrt96.exe',stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
-        pout = proc.stdout
-        pin = proc.stdin
-        it = 0
-        rxnVar = 'realReac.con'
-        
-        if reaction_type != 'psat':
-            rxnVar = 'Xtend.con'
-            
-        title = input('What is the title of your reaction?')
-        comm = ['n', 'updateSlop1.dat', '2', rxnVar, '2', '1', title]
-        for component in reaction:
-            if component[1] not in nameLst:
-                print(str(component[1]) + ' is not in the slop16 database. Please check your spelling and try again. You can use the search function the query the database.')
-            else:
-                comm.append(str(component[0]) + ' ' + component[1])
-                
-        comm.append('0')
-        comm.append('y')
-        comm.append('n')
-        comm.append(title + '.txt')
-        comm.append('1')
-        comm.append('1')
-        comm.append('empty')
+        '''Takes a list of reaction lists (comprised of tuples) and runs supcrt'''
+        for reaction in rxn_lst:
+            proc = subprocess.Popen('supcrt96.exe',stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+            pout = proc.stdout
+            pin = proc.stdin
+            it = 0
+            rxnVar = 'realReac.con'
 
-        def outLoop():
-            running = True
-            while(running):
-                line = pout.readline().decode(sys.stdout.encoding)
-                running='\n' in line
+            if reaction_type != 'psat':
+                rxnVar = 'Xtend.con'
 
-        threading.Thread(target=outLoop).start()
-        while(proc.poll() is None): 
-            try:
-                inp = comm[it]
-                it += 1
-            #     inp = bytearray(input('User Input: ')+'\n',sys.stdin.encoding)
-                if(proc.poll() is None):
-                    pin.write(bytearray(inp+'\n',sys.stdin.encoding))
-                    pin.flush()
-            except:
-                pass
-    return
+            title = input('What is the title of your reaction?')
+            comm = ['n', 'updateSlop1.dat', '2', rxnVar, '2', '1', title]
+            for component in reaction:
+                if component[1] not in nameLst:
+                    print(str(component[1]) + ' is not in the slop16 database. Please check your spelling and try again. You can use the search function the query the database.')
+                else:
+                    comm.append(str(component[0]) + ' ' + component[1])
+
+            comm.append('0')
+            comm.append('y')
+            comm.append('n')
+            comm.append(title + '.txt')
+            comm.append('1')
+            comm.append('1')
+            comm.append('empty')
+
+            def outLoop():
+                running = True
+                while(running):
+                    line = pout.readline().decode(sys.stdout.encoding)
+                    running='\n' in line
+
+            threading.Thread(target=outLoop).start()
+            while(proc.poll() is None): 
+                try:
+                    inp = comm[it]
+                    it += 1
+                #     inp = bytearray(input('User Input: ')+'\n',sys.stdin.encoding)
+                    if(proc.poll() is None):
+                        pin.write(bytearray(inp+'\n',sys.stdin.encoding))
+                        pin.flush()
+                except:
+                    pass
+        return
     
     def supcrt_inp(rxn_lst, reaction_type = 'psat'):
         '''Takes a list of reaction lists (comprised of tuples) and runs supcrt'''
