@@ -310,6 +310,7 @@ class DEW(object):
         self.mineralInputs = []
         self.aqueousInputs = []
         self.gasInputs = []
+        self.waterInputs = []
         
         while mineralCount < 15:
             mineralCount += 1
@@ -396,12 +397,10 @@ class DEW(object):
             
             # Water
         validBool3 = False
-        self.inpWater = []
         while not validBool3:
             inpWater = input('Would you like to use water? (yes/no)')
             if inpWater in ['yes', 'no']:
                 validBool3 = True
-                self.inpWater = inpWater
             else:
                 print('Please answer yes or no')
                 continue
