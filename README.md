@@ -32,7 +32,7 @@ reaction = dm.DEW()
 ```
 If you run
 ```
-reaction.otions()
+reaction.options()
 ```
 It will give you a brief overview of the documentation that follows.
 
