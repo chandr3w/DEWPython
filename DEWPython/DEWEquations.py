@@ -229,7 +229,11 @@ class DEWEquations:
             D = 0.0170609505 - 0.0146355822 /  ( Tr * Tr )  + 0.0579768283 /  ( Tr * Tr * Tr )
             E = - 0.000841246372 + 0.00495186474 /  ( Tr * Tr )  - 0.00916248538 /  ( Tr * Tr * Tr )
             f = - 0.100358152 / Tr
+            #####
+            # This value has been edited to be consistent with Mark Ghiorso's objective-C version of DEW and the original Zhang and Duan 2005 paper, 
+            # although it is incosistent with the Excel-implemented DEW Model
             g = np.double(- 0.00182674744 * Tr)
+            ########
             delta = 1 + B / Vr + C /  ( Vr * Vr )  + D / pow(Vr, 4) + E / pow(Vr, 5) +  ( f /  ( Vr * Vr )  + g / pow(Vr, 4) )  * np.exp(- 0.0105999998 / pow(Vr, 2))
             kappa = B * cc + 2 * C *  ( cc * cc )  * density + 4 * D * pow(cc, 4) * pow(density, 3) + 5 * E * pow(cc, 5) * pow(density, 4) +  ( 2 * f *  ( cc * cc )  * density + 4 * g * pow(cc, 4) * pow(density, 3) -  ( f /  ( Vr * Vr )  + g / pow(Vr, 4) )  *  ( 2 * 0.0105999998 *  ( cc * cc )  * density ) )  * np.exp(- 0.0105999998 /  ( Vr * Vr ))
             fn_return_value = m /  ( ZD05_R * TK *  ( delta + density * kappa ) )
