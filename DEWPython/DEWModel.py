@@ -1316,7 +1316,7 @@ class DEW(object):
                 else:
                     self.RhoWatArr.append(0)
             else:
-                self.RhoWatArr.append(DEWEquations.calculateDensity(self.pressureUsed[i], self.tempUsed[i], self.equation, 0.01, self.psat))
+                self.RhoWatArr.append(DEWEquations.DEWEquations.calculateDensity(self.pressureUsed[i], self.tempUsed[i], self.equation, 0.01, self.psat))
                
         # Sets the dielectric constant array
         for i in range(len(self.pressureUsed)):
@@ -1330,17 +1330,16 @@ class DEW(object):
                     self.DiaArr.append(0)
             else:
                 if self.ForceSupcrt == True and self.pressureUsed[i] < 5000 and self.psat == False:
-                    self.DiaArr.append(DEWEquations.calculateEpsilon(self.RhoWatArr[i], self.tempUsed[i], 1, self.psat))
+                    self.DiaArr.append(DEWEquations.DEWEquations.calculateEpsilon(self.RhoWatArr[i], self.tempUsed[i], 1, self.psat))
                 else:
-                    self.DiaArr.append(DEWEquations.calculateEpsilon(self.RhoWatArr[i], self.tempUsed[i], self.diaEq, self.psat))
+                    self.DiaArr.append(DEWEquations.DEWEquations.calculateEpsilon(self.RhoWatArr[i], self.tempUsed[i], self.diaEq, self.psat))
         
         
         # Sets up the Q array
         for i in range(len(self.pressureUsed)):
             if self.DisplayVol == True:
                 try:
-                    # Has issues with some Q, not sure if problematic
-                    self.QArr.append(float(DEWEquations.calculateQ(self.pressureUsed[i], self.tempUsed[i], self.RhoWatArr[i], self.equation, self.diaEq, self.psat))*np.double(10)**6)
+                    self.QArr.append(float(DEWEquations.DEWEquations.calculateQ(self.pressureUsed[i], self.tempUsed[i], self.RhoWatArr[i], self.equation, self.diaEq, self.psat))*np.double(10)**6)
                 except:
                     self.QArr.append(0)
             else:
@@ -1703,7 +1702,7 @@ class DEW(object):
                 returnLst[returnVar] = subDict
             self.supcrtOut = returnLst
     
-    def supcrt_inp(rxn_lst, reaction_type = 'psat'):
+    def supcrt_inp(self, rxn_lst, reaction_type = 'psat'):
         '''Takes a list of reaction lists (comprised of tuples) and runs supcrt'''
         for reaction in rxn_lst:
             proc = subprocess.Popen('supcrt96.exe',stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
