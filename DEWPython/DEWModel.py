@@ -1173,11 +1173,11 @@ class DEW(object):
                 temppLogK[pressure].append(logK)
                 temptLogK[temp].append(logK)
 
-            for delG, temp, pressure in a.delG:
+            for delG, temp, pressure in self.delG:
                 temppDelG[pressure].append(delG)
                 temptDelG[temp].append(delG)
 
-            for delV, temp, pressure in a.delV:
+            for delV, temp, pressure in self.delV:
                 temppDelV[pressure].append(delV)
                 temptDelV[temp].append(delV)
 
