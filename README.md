@@ -98,7 +98,7 @@ New to version 1.3.1, you can now run supcrt/DEW without running the input loops
 ```
 reaction.run(pt_arr, min_inp =[], aq_inp = [], g_inp = [], h2o_inp = 0, min_out = [],aq_out =[], g_out = [],h2o_out = 0, 
         ptInp = 'Psat', rhoWat = 'Z&D 2005', forceBool = False, dieEQ = 'Supcrt', forceSC = True, 
-        WFEQ ='D&H 1978', dsV = True, pdsV = True, DV = True, EQ = 1, dEQ = 1, pst = True, mWn = 1))
+        WFEQ ='D&H 1978', dsV = True, pdsV = True, DV = True, EQ = 1, dEQ = 1, pst = True, mWn = 1, makeP = False))
 ```
 Where pt_arr is either of shape ((tmin, tmax, tstep)) for Psat inputs or (((tmin, tmax, tstep),(pmin, pmax, pstep))) for non-psat.
 
