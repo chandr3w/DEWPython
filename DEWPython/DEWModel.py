@@ -1356,7 +1356,7 @@ class DEW(object):
         return
     def run(self, pt_arr, min_inp =[], aq_inp = [], g_inp = [], h2o_inp = 0, min_out = [],aq_out =[], g_out = [],h2o_out = 0, 
         ptInp = 'Psat', rhoWat = 'Z&D 2005', forceBool = False, dieEQ = 'Supcrt', forceSC = True, 
-        WFEQ ='D&H 1978', dsV = True, pdsV = True, DV = True, EQ = 1, dEQ = 1, pst = True, mWn = 1):
+        WFEQ ='D&H 1978', dsV = True, pdsV = True, DV = True, EQ = 1, dEQ = 1, pst = True, mWn = 1, makeP = False):
 
         if h2o_inp > 0:
             self.waterInputs = [['yes',h2o_inp]]
@@ -1393,7 +1393,8 @@ class DEW(object):
         # to actually run:
         self.set_tp(pt_arr)
         self.calculate()
-        self.make_plots()
+        if makeP == True:
+            self.make_plots()
         return
        
        
