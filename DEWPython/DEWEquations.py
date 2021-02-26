@@ -347,7 +347,7 @@ class DEWEquations:
                     else: 
                         spacing = ( pressure - 1000 )  / 500
                     
-                    for i in range(1000, pressure + 1, spacing):
+                    for i in range(1000, pressure + 1, int(spacing)):
                         #This integral determines the density only down to an error of 100 bars
                         #rather than the standard of 0.01. This is done to save computational
                         #time. Tests indicate this reduces the computation by about a half while
