@@ -721,8 +721,8 @@ class DEW(object):
                     validBool = True
                 except ValueError:
                     print('You have entered a non-integer value, please start again')
-            tempArr = np.arange(start= templow, stop = temphigh + 1, step = tempstep)
-            parrHelp = np.arange(start= pmin, stop = pmax + .1, step = pstep)
+            tempArr = np.arange(start= templow, stop = temphigh + .00001, step = tempstep)
+            parrHelp = np.arange(start= pmin, stop = pmax + .00001, step = pstep)
             for i in range(len(parrHelp)):
                 pressArr.append([parrHelp[i]]* len(tempArr))
             pressArr = np.multiply(pressArr, 1000)
