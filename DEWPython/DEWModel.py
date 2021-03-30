@@ -132,7 +132,7 @@ def search(string):
         if str.lower(string) in str.lower(item):
             print(item)
     for key in mineralDictionary:
-        if str.lower(string) in str.lower(item):
+        if str.lower(string) in str.lower(key):
             print(key)
 
 
