@@ -48,6 +48,7 @@ sup_Path =  pkg_resources.resource_filename(resource_package, sup_path)
 global Tr, bigQ, Chi, Pr, E_PrTr, bigR, Psi, Theta, Upsilon, Conversion, mineralDictionary
 
 mineralDictionary = json.load(open(mineralPath))
+mineralDictionary2 = json.load(open(mineralPath2))
 '''A dictionary that stores all the minerals and allows them to be queried for use in the DEW model.'''
 
 bigQ = 5.903E-07
@@ -1131,7 +1132,7 @@ class DEW(object):
                 if self.psat == False:
                     myMinPath = mineralDictionary2
                 else: 
-                    myMinPath = mineralDictioanry
+                    myMinPath = mineralDictionary
                 for temp in self.tempUsed:
                     self.mineralInpGibbs.append(np.multiply(myMinPath[self.mineralInputs[i][0]]['delG'][myMinPath[self.mineralInputs[i][0]]['Temperature'].index(temp)], int(self.mineralInputs[i][1]))) 
                     self.mineralInpV.append(np.multiply(myMinPath[self.mineralInputs[i][0]]['delV'][myMinPath[self.mineralInputs[i][0]]['Temperature'].index(temp)], int(self.mineralInputs[i][1]))) 
