@@ -51,7 +51,7 @@ mineralDictionary = json.load(open(mineralPath))
 try:
     mineralDictionary2 = json.load(open(mineralPath2))
 except:
-    continue 
+    print('Extended Mineral Dictionary not in use')
 '''A dictionary that stores all the minerals and allows them to be queried for use in the DEW model.'''
 
 bigQ = 5.903E-07
