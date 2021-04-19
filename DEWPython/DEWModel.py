@@ -1222,7 +1222,7 @@ class DEW(object):
         self.delV = []
         
         if self.ptInput == "Custom":
-            ptSheet = pd.read_excel(DEW_Location, sheet_name = 'Input', header = None)
+            ptSheet = pd.read_excel(inpPath, sheet_name = 'Input', header = None)
             ptFinder = ptSheet.to_numpy()
             pressArr = ptFinder[:,79][5:]
             tempArr = ptFinder[:,80][5:]
