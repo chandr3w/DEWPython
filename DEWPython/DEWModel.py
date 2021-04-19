@@ -1222,24 +1222,11 @@ class DEW(object):
         self.delV = []
         
         if self.ptInput == "Custom":
-            ptSheet = pd.read_excel(inpPath, sheet_name = 'Input', header = None)
+            ptSheet =pd.read_csv(inpPath,encoding= 'unicode_escape', header = None)
             ptFinder = ptSheet.to_numpy()
-            pressArr = ptFinder[:,79][5:]
-            tempArr = ptFinder[:,80][5:]
-            storeidx = 0
-            storeidxP = 0
-            for i in range(len(tempArr)):
-                if np.isnan(tempArr[i]) == True:
-                    storeidx = int(i)
-                    break
-            for i in range(len(pressArr)):
-                if np.isnan(pressArr[i]) == True:
-                    storeidxP = int(i)
-                    break
-
-            tempArr = tempArr[:storeidx]
-            pressArr = pressArr[:storeidxP]
-
+            tempArr = [float(i[1]) for i in ptFinder[4:]]
+            pressArr = [float(i[0]) for i in ptFinder[4:]]
+            
         elif self.ptInput == "Regular":
             try:
                 templow = pt_arr[0][0]
