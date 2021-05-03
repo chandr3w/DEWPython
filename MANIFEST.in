@@ -14,3 +14,4 @@ include DEWPython/resources/dpronshp.dat
 include DEWPython/resources/realReac.con
 include DEWPython/resources/Xtend.con
 include DEWPython/resources/dpronsbl.dat
+include DEWPython/resources/updateSlop1.dat
