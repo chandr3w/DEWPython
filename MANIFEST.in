@@ -11,3 +11,6 @@ include DEWPython/dpronsbl.dat
 include DEWPython/resources/SUPCRTBL.exe
 include DEWPython/resources/supcrt96.exe
 include DEWPython/resources/dpronshp.dat
+include DEWPython/resources/realReac.con
+include DEWPython/resources/Xtend.con
+include DEWPython/resources/dpronsbl.dat
