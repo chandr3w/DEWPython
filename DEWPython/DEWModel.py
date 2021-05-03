@@ -43,7 +43,7 @@ denPath = pkg_resources.resource_filename(resource_package, den_path)
 g_path = '/'.join(('resources', 'water_gibbs.csv'))
 gPath = pkg_resources.resource_filename(resource_package, g_path)
 sup_path = '/'.join(('resources', 'supcrt96.exe'))
-sup_Path =  pkg_resources.resource_filename(resource_package, sup_path)
+supPath =  pkg_resources.resource_filename(resource_package, sup_path)
 
 global Tr, bigQ, Chi, Pr, E_PrTr, bigR, Psi, Theta, Upsilon, Conversion, mineralDictionary
 
@@ -1556,6 +1556,9 @@ class DEW(object):
         '''A function that runs the pre-compiled SUPCRTBL found in the file folder'''
         if version != '96':
             sup_path = '/'.join(('resources', 'SUPCRTBL.exe'))
+            supPath =  pkg_resources.resource_filename(resource_package, sup_path)
+        else:
+            sup_path = '/'.join(('resources', 'supcrt96.exe'))
             supPath =  pkg_resources.resource_filename(resource_package, sup_path)
         self.proc = subprocess.Popen(supPath,shell = True, stdout = subprocess.PIPE, stdin = subprocess.PIPE, stderr = subprocess.STDOUT)
         self.pout = self.proc.stdout
