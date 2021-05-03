@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='DEWPython',
-    version='1.3.6',
+    version='1.3.7',
     author='chandr3w',
     author_email='amchan@caltech.edu',
     description='Python-Implemented Deep Earth Water Model',
@@ -13,7 +13,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url='https://github.com/chandr3w/DEWPython',
     packages=setuptools.find_packages(),
-    download_url = 'https://github.com/chandr3w/DEWPython/archive/1.3.6.tar.gz',
+    download_url = 'https://github.com/chandr3w/DEWPython/archive/1.3.7.tar.gz',
     install_requires=[
         'numpy',
         'pandas',
