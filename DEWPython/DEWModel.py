@@ -1700,9 +1700,12 @@ class DEW(object):
     def supcrt_inp(self, rxn_lst, reaction_type = 'psat'):
         '''Takes a list of reaction lists (comprised of tuples) and runs supcrt'''
         for reaction in rxn_lst:
-            proc = subprocess.Popen('supcrt96.exe',stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
-            pout = proc.stdout
-            pin = proc.stdin
+            sup_path = '/'.join(('resources', 'supcrt96.exe'))
+            supPath =  pkg_resources.resource_filename(resource_package, sup_path)
+            self.proc = subprocess.Popen(supPath,stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, shell=True)
+            
+            self.pout = self.proc.stdout
+            self.pin = self.proc.stdin
             it = 0
             rxnVar = 'realReac.con'
 
@@ -1725,21 +1728,16 @@ class DEW(object):
             comm.append('1')
             comm.append('empty')
 
-            def outLoop():
-                running = True
-                while(running):
-                    line = pout.readline().decode(sys.stdout.encoding)
-                    running='\n' in line
 
-            threading.Thread(target=outLoop).start()
-            while(proc.poll() is None): 
+            threading.Thread(target=self.outLoop).start()
+            while(self.proc.poll() is None): 
                 try:
                     inp = comm[it]
                     it += 1
                 #     inp = bytearray(input('User Input: ')+'\n',sys.stdin.encoding)
-                    if(proc.poll() is None):
-                        pin.write(bytearray(inp+'\n',sys.stdin.encoding))
-                        pin.flush()
+                    if(self.proc.poll() is None):
+                        self.pin.write(bytearray(inp+'\n',sys.stdin.encoding))
+                        self.pin.flush()
                 except:
                     pass
         return
