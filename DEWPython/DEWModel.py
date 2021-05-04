@@ -1577,6 +1577,13 @@ class DEW(object):
             print(line, end='')
             running='\n' in line
         print('Finished')
+        
+    def outLoop2(self):
+        '''A helper function to allow SUPCRT96 to run'''
+        running = True
+        while(running):
+            line = self.pout.readline().decode(sys.stdout.encoding)
+            running='\n' in line
     
     def run_supcrt(self, version = '96'):
         '''A function that runs the pre-compiled SUPCRTBL found in the file folder'''
@@ -1723,7 +1730,7 @@ class DEW(object):
                 returnLst[returnVar] = subDict
             self.supcrtOut = returnLst
     
-    def supcrt_inp(self, rxn_lst, reaction_type = 'psat'):
+    def supcrt_inp(self, rxn_lst, title, reaction_type = 'psat'):
         '''Takes a list of reaction lists (comprised of tuples) and runs supcrt'''
         for reaction in rxn_lst:
             sup_path = '/'.join(('resources', 'supcrt96.exe'))
@@ -1737,8 +1744,8 @@ class DEW(object):
 
             if reaction_type != 'psat':
                 rxnVar = 'Xtend.con'
-
-            title = input('What is the title of your reaction?')
+            if len(title) < 1:
+                title = input('What is the title of your reaction?')
             comm = ['n', 'updateSlop1.dat', '2', rxnVar, '2', '1', title]
             for component in reaction:
                 if component[1] not in nameLst:
@@ -1755,7 +1762,7 @@ class DEW(object):
             comm.append('empty')
 
 
-            threading.Thread(target=self.outLoop).start()
+            threading.Thread(target=self.outLoop2).start()
             while(self.proc.poll() is None): 
                 try:
                     inp = comm[it]
