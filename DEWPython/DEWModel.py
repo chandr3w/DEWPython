@@ -1,47 +1,64 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Package Imports 
+## Package Imports 
 
-# In[2]:
-
-
-import pandas as pd
+# Equation imports
 import numpy as np
+from DEWPython import DEWEquations
+
+# Pandas is used for the custom sheet reading
+import pandas as pd
+
+# sys, threading, subprocess, and os all correspond to uses within the supcrt functions
 import sys
 import threading
 import subprocess
 import os
+
+# json is used to 
 import json
+
+# plotting imports
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
-from DEWPython import DEWEquations
 from matplotlib.lines import Line2D
-get_ipython().run_line_magic('matplotlib', 'inline')
+get_ipython().run_line_magic('matplotlib', 'inline') # I don't think this is important, but is still ere
 from collections import defaultdict
+
+# path and pkg_resources are used to reference downloaded files in the package
 import pkg_resources
 import os.path as op
 
-# ### Defining a Global Variables (Location and Constants)
-resource_package = 'DEWPython'
+#### Defining a Global Variables (Location and Constants)
+resource_package = 'DEWPython' # resource package definition (standard)
+#defualt mineral dictionary
 min_path = '/'.join(('resources', 'mineralDictionary.txt'))
 mineralPath = pkg_resources.resource_filename(resource_package, min_path)
 
+# extended mineral dictionary
 min_path2 = '/'.join(('resources', 'extendMineralDictionary.txt'))
 mineralPath2 = pkg_resources.resource_filename(resource_package, min_path2)
 
+#path for the gasses used
 gas_path = '/'.join(('resources', 'gasLst.txt'))
 gasPath = pkg_resources.resource_filename(resource_package, gas_path)
+
+#path for the aqueous species used
 aq_path = '/'.join(('resources', 'aqueousLst.txt'))
 aqPath = pkg_resources.resource_filename(resource_package, aq_path)
+
+#paths for custom sheets
 die_path =  '/'.join(('resources', 'dielectric.csv'))
 diePath = pkg_resources.resource_filename(resource_package, die_path)
 inp_path ='/'.join(('resources', 'input.csv'))
 inpPath = pkg_resources.resource_filename(resource_package, inp_path)
-den_path ='/'.join(('resources', 'input.csv'))
+den_path ='/'.join(('resources', 'Wat_den.csv'))
 denPath = pkg_resources.resource_filename(resource_package, den_path)
 g_path = '/'.join(('resources', 'water_gibbs.csv'))
 gPath = pkg_resources.resource_filename(resource_package, g_path)
+
+# paths for supcrt
 sup_path = '/'.join(('resources', 'supcrt96.exe'))
 supPath =  pkg_resources.resource_filename(resource_package, sup_path)
 
@@ -49,11 +66,12 @@ global Tr, bigQ, Chi, Pr, E_PrTr, bigR, Psi, Theta, Upsilon, Conversion, mineral
 
 mineralDictionary = json.load(open(mineralPath))
 try:
-    mineralDictionary2 = json.load(open(mineralPath2))
+    mineralDictionary2 = json.load(open(mineralPath2)) # the extended mineral dictionary is too large to be stored in github
+    '''A dictionary that stores all the minerals and allows them to be queried for use in the DEW model.'''
 except:
     print('Extended Mineral Dictionary not in use')
-'''A dictionary that stores all the minerals and allows them to be queried for use in the DEW model.'''
 
+# Defining global constants analagous to DEW 2019    
 bigQ = 5.903E-07
 '''Big Q is the 5.903E-07, and has units of bar^-1 '''
 Chi = -3.090E-07
@@ -77,19 +95,11 @@ Conversion = 41.8393
 
 
 # ## Importing the Aqueous Species Table from the Sheet
-
-# In[4]:
-
-
 [nameLst, symbolDict, delGf, delHf, entropy, volume, specHeat, a1x10, 
  a2x10_2, a3, a4x10_4, c1, c2x10_4, omegax10_5, Z, comments] = json.load(open(aqPath))
 
 
 # #### Code for adding additional aqueous species
-
-# In[5]:
-
-
 # nameLst.append('ALANINE,AQ')
 # symbolDict['ALANINE,AQ'] = 'C3H7NO2'
 # delGf['ALANINE,AQ'] = -88810  
@@ -107,28 +117,20 @@ Conversion = 41.8393
 # Z['ALANINE,AQ'] = 0
 
 
-# In[6]:
-
-
+### Code for dumping aqueous species after updating ###
 # d =[nameLst, symbolDict, delGf, delHf, entropy, volume, specHeat, a1x10, 
 #  a2x10_2, a3, a4x10_4, c1, c2x10_4, omegax10_5, Z, comments]
 # json.dump(d, open("aqueousLst.txt",'w'))
 
 
 # ## Importing the Gas Table from the Sheet
-
-#  
-
-# In[7]:
-
-
 [GasLst,GasSymb,GasDelGf,GasDelHf,GasEntropy,GasCp,GasA,GasBx103,GasCx10_5, GasT] = json.load(open(gasPath))
 
 
-# # An Object Class that Can Calculate and Return Parameters for Different Options of the Deep Earth Water Model
 
-# In[8]:
+# Search function
 def search(string):
+    '''A function to searh for species within DEWython'''
     for item in nameLst:
         if str.lower(string) in str.lower(item):
             print(item)
@@ -139,7 +141,7 @@ def search(string):
         if str.lower(string) in str.lower(key):
             print(key)
 
-
+# # An Object Class that Can Calculate and Return Parameters for Different Options of the Deep Earth Water Model
 class DEW(object):
     def __init__(self):
        
