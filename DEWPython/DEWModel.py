@@ -99,7 +99,7 @@ Conversion = 41.8393
  a2x10_2, a3, a4x10_4, c1, c2x10_4, omegax10_5, Z, comments] = json.load(open(aqPath))
 
 
-# #### Code for adding additional aqueous species
+############ CODE SAMPLE FOR ADDING ADDITIONAL SPECIES (AQ) ##################################
 # nameLst.append('ALANINE,AQ')
 # symbolDict['ALANINE,AQ'] = 'C3H7NO2'
 # delGf['ALANINE,AQ'] = -88810  
@@ -117,18 +117,42 @@ Conversion = 41.8393
 # Z['ALANINE,AQ'] = 0
 
 
-### Code for dumping aqueous species after updating ###
+### CODE FOR REWRITING BASE FILES ###
 # d =[nameLst, symbolDict, delGf, delHf, entropy, volume, specHeat, a1x10, 
 #  a2x10_2, a3, a4x10_4, c1, c2x10_4, omegax10_5, Z, comments]
 # json.dump(d, open("aqueousLst.txt",'w'))
 
 
+#######################   CODE SAMPLE FOR AUTOMATICALLY UPDATING SPECIES (GAS)  #############################
+# This can be easily adapted for aqueous species too
+# with open('slopGasses.txt') as f:
+#     impor = f.read()
+#     import_data = impor.replace('\t', ' ')
+#     split = import_data.split('\n')
+#     newsplit = []
+#     for i in split:
+#         line = i.split(' ')
+#         newline = [j for j in line if j]
+#         newsplit.append(newline)
+# for i in range(len(newsplit)):
+#     if ',g' in newsplit[i][0] :
+#         GasLst.append(newsplit[i][0])
+#         GasSymb[newsplit[i][0]] = newsplit[i][1]
+#         GasDelGf[newsplit[i][0]] =float(newsplit[i+3][0])
+#         GasDelHf[newsplit[i][0]] =float(newsplit[i+3][1])
+#         GasEntropy[newsplit[i][0]] =float(newsplit[i+3][2])
+#         GasCp[newsplit[i][0]] =float(newsplit[i+3][3])
+#         GasA[newsplit[i][0]] =float(newsplit[i+4][0])
+#         GasBx103[newsplit[i][0]] =float(newsplit[i+4][1])
+#         GasCx10_5[newsplit[i][0]] =float(newsplit[i+4][2])
+#         GasT[newsplit[i][0]] =float(newsplit[i+5][0])
+# g =[GasLst,GasSymb,GasDelGf,GasDelHf,GasEntropy,GasCp,GasA,GasBx103,GasCx10_5, GasT]
+# json.dump(g, open("gasLstNew.txt",'w'))
+
 # ## Importing the Gas Table from the Sheet
 [GasLst,GasSymb,GasDelGf,GasDelHf,GasEntropy,GasCp,GasA,GasBx103,GasCx10_5, GasT] = json.load(open(gasPath))
 
-
-
-# Search function
+# Search function - can take any length of string
 def search(string):
     '''A function to searh for species within DEWython'''
     for item in nameLst:
